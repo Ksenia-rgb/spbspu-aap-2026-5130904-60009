@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 void printAuthor()
 {
   std::cout << "berezin.ivan" << '\n';
