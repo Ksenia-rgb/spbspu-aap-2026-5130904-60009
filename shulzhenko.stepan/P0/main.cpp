@@ -1,6 +1,7 @@
 #include <iostream>
 
-int main() {
-    std::cout << "shulzhenko.stepan\n";
+int main()
+{
+  std::cout << "shulzhenko.stepan\n";
 }
 
