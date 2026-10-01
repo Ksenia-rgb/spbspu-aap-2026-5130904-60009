@@ -1,7 +1,5 @@
 #include <cstddef>
-#include <exception>
 #include <iostream>
-#include <stdexcept>
 
 struct Matrix
 {
@@ -13,22 +11,22 @@ struct Matrix
 int** createMatrix(const size_t rows, const size_t columns)
 {
   int** const matrix = new int*[rows];
-  std::size_t created_rows = 0;
-  try
+  if (matrix == nullptr)
   {
-    for (; created_rows < rows; created_rows++)
-    {
-      matrix[created_rows] = new int[columns];
-    }
+    return nullptr;
   }
-  catch (...)
+  for (size_t i = 0; i < rows; i++)
   {
-    for (size_t i = 0; i < created_rows; i++)
+    matrix[i] = new int[columns];
+    if (matrix[i] == nullptr)
     {
-      delete[] matrix[i];
+      for (size_t j = 0; j < i; j++)
+      {
+        delete[] matrix[j];
+      }
+      delete[] matrix;
+      return nullptr;
     }
-    delete[] matrix;
-    throw;
   }
   return matrix;
 }
@@ -45,7 +43,7 @@ void clearMatrix(Matrix& matrix) noexcept
   matrix.columns = 0;
 }
 
-void readMatrix(Matrix& matrix)
+bool readMatrix(Matrix& matrix)
 {
   for (size_t i = 0; i < matrix.rows; i++)
   {
@@ -53,10 +51,11 @@ void readMatrix(Matrix& matrix)
     {
       if (!(std::cin >> matrix.field[i][j]))
       {
-        throw std::runtime_error("failed to read matrix's element");
+        return false;
       }
     }
   }
+  return true;
 }
 
 void printMatrix(const Matrix& matrix)
@@ -80,6 +79,10 @@ Matrix transposeMatrix(const Matrix& matrix)
       new_columns,
       createMatrix(new_rows, new_columns),
   };
+  if (result.field == nullptr)
+  {
+    return result;
+  }
   for (size_t i = 0; i < matrix.rows; i++)
   {
     for (size_t j = 0; j < matrix.columns; j++)
@@ -92,36 +95,39 @@ Matrix transposeMatrix(const Matrix& matrix)
 
 int main()
 {
-  try
+  size_t rows = 0, columns = 0;
+  if (!(std::cin >> rows >> columns))
   {
-    size_t rows = 0, columns = 0;
-    if (!(std::cin >> rows >> columns))
-    {
-      throw std::runtime_error("failed to read matrix size");
-    }
-    Matrix matrix{
-        rows,
-        columns,
-        createMatrix(rows, columns),
-    };
-    try
-    {
-      readMatrix(matrix);
-      Matrix transposed = transposeMatrix(matrix);
-      printMatrix(transposed);
-      clearMatrix(matrix);
-      clearMatrix(transposed);
-    }
-    catch (...)
-    {
-      clearMatrix(matrix);
-      throw;
-    }
-  }
-  catch (const std::exception& e)
-  {
-    std::cerr << "Error: " << e.what() << '\n';
     return 1;
   }
+
+  Matrix matrix{
+      rows,
+      columns,
+      createMatrix(rows, columns),
+  };
+  if (matrix.field == nullptr)
+  {
+    return 2;
+  }
+
+  if (!readMatrix(matrix))
+  {
+    clearMatrix(matrix);
+    return 1;
+  }
+
+  Matrix transposed = transposeMatrix(matrix);
+  if (transposed.field == nullptr)
+  {
+    clearMatrix(matrix);
+    return 2;
+  }
+
+  printMatrix(transposed);
+
+  clearMatrix(matrix);
+  clearMatrix(transposed);
+
   return 0;
 }
