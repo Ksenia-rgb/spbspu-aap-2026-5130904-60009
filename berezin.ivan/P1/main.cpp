@@ -2,8 +2,8 @@
 #include <iostream>
 
 constexpr int success = 0;
-constexpr int inputError = 1;
-constexpr int allocationError = 2;
+constexpr int input_error = 1;
+constexpr int allocation_error = 2;
 
 struct Matrix
 {
