@@ -1,5 +1,7 @@
+#include <cstddef>
 #include <exception>
 #include <iostream>
+#include <stdexcept>
 
 struct Matrix
 {
@@ -8,9 +10,9 @@ struct Matrix
   int** field = nullptr;
 };
 
-int** create_matrix(const size_t rows, const size_t columns)
+int** createMatrix(const size_t rows, const size_t columns)
 {
-  int** matrix = new int*[rows];
+  int** const matrix = new int*[rows];
   std::size_t created_rows = 0;
   try
   {
@@ -31,7 +33,7 @@ int** create_matrix(const size_t rows, const size_t columns)
   return matrix;
 }
 
-void clear_matrix(Matrix& matrix) noexcept
+void clearMatrix(Matrix& matrix) noexcept
 {
   for (size_t i = 0; i < matrix.rows; i++)
   {
@@ -43,7 +45,7 @@ void clear_matrix(Matrix& matrix) noexcept
   matrix.columns = 0;
 }
 
-void read_matrix(Matrix& matrix)
+void readMatrix(Matrix& matrix)
 {
   for (size_t i = 0; i < matrix.rows; i++)
   {
@@ -57,7 +59,7 @@ void read_matrix(Matrix& matrix)
   }
 }
 
-void print_matrix(const Matrix& matrix)
+void printMatrix(const Matrix& matrix)
 {
   for (size_t i = 0; i < matrix.rows; i++)
   {
@@ -69,14 +71,14 @@ void print_matrix(const Matrix& matrix)
   }
 }
 
-Matrix transpose_matrix(const Matrix& matrix)
+Matrix transposeMatrix(const Matrix& matrix)
 {
   const size_t new_rows = matrix.columns;
   const size_t new_columns = matrix.rows;
   Matrix result{
       new_rows,
       new_columns,
-      create_matrix(new_rows, new_columns),
+      createMatrix(new_rows, new_columns),
   };
   for (size_t i = 0; i < matrix.rows; i++)
   {
@@ -100,19 +102,19 @@ int main()
     Matrix matrix{
         rows,
         columns,
-        create_matrix(rows, columns),
+        createMatrix(rows, columns),
     };
     try
     {
-      read_matrix(matrix);
-      Matrix transposed = transpose_matrix(matrix);
-      print_matrix(transposed);
-      clear_matrix(matrix);
-      clear_matrix(transposed);
+      readMatrix(matrix);
+      Matrix transposed = transposeMatrix(matrix);
+      printMatrix(transposed);
+      clearMatrix(matrix);
+      clearMatrix(transposed);
     }
     catch (...)
     {
-      clear_matrix(matrix);
+      clearMatrix(matrix);
       throw;
     }
   }
