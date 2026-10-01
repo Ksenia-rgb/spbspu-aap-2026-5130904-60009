@@ -102,7 +102,7 @@ int main()
   size_t rows = 0, columns = 0;
   if (!(std::cin >> rows >> columns))
   {
-    return inputError;
+    return input_error;
   }
 
   Matrix matrix{
@@ -112,20 +112,20 @@ int main()
   };
   if (matrix.field == nullptr)
   {
-    return allocationError;
+    return allocation_error;
   }
 
   if (!readMatrix(matrix))
   {
     clearMatrix(matrix);
-    return inputError;
+    return input_error;
   }
 
   Matrix transposed = transposeMatrix(matrix);
   if (transposed.field == nullptr)
   {
     clearMatrix(matrix);
-    return allocationError;
+    return allocation_error;
   }
 
   printMatrix(transposed);
