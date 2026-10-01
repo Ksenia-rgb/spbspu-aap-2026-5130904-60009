@@ -1,6 +1,10 @@
 #include <cstddef>
 #include <iostream>
 
+constexpr int success = 0;
+constexpr int inputError = 1;
+constexpr int allocationError = 2;
+
 struct Matrix
 {
   size_t rows = 0;
@@ -98,7 +102,7 @@ int main()
   size_t rows = 0, columns = 0;
   if (!(std::cin >> rows >> columns))
   {
-    return 1;
+    return inputError;
   }
 
   Matrix matrix{
@@ -108,20 +112,20 @@ int main()
   };
   if (matrix.field == nullptr)
   {
-    return 2;
+    return allocationError;
   }
 
   if (!readMatrix(matrix))
   {
     clearMatrix(matrix);
-    return 1;
+    return inputError;
   }
 
   Matrix transposed = transposeMatrix(matrix);
   if (transposed.field == nullptr)
   {
     clearMatrix(matrix);
-    return 2;
+    return allocationError;
   }
 
   printMatrix(transposed);
@@ -129,5 +133,5 @@ int main()
   clearMatrix(matrix);
   clearMatrix(transposed);
 
-  return 0;
+  return success;
 }
