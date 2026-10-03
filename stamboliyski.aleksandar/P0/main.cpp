@@ -1,6 +1,6 @@
-#include<iostream>
+#include <iostream>
 
 int main()
 {
-	std::cout<<"stamboliyski.aleksandar\n";
+  std::cout << "stamboliyski.aleksandar\n";
 }
