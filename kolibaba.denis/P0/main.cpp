@@ -1,6 +1,3 @@
 #include <iostream>
 
-int main()
-{
-   std::cout << "kolibaba.denis\n";
-}
+int main() { std::cout << "kolibaba.denis\n"; }
