@@ -1,120 +1,124 @@
 #include<iostream>
 #include<stdexcept>
 
-int * EnterNums()
+namespace stamboliyski
 {
-  int num=0;
-  size_t count=0;
-  int * p = nullptr;
-  if(!(std::cin>>num))
+  int * EnterNums()
   {
-    throw std::invalid_argument("Invalid argument");
-  }
-  if(num==0)
-  {
-  p=new int[1];
-  }
-  while(num!=0)
-  {
-    if(p==nullptr)
-    {
-      p = new int[1];
-      p[0]=num;
-    }
-    count+=1;
-    int * temp = new int[count];
-    for(size_t i =0;i<count;i++)
-    {
-      temp[i]=p[i];
-    }
-    temp[count-1]=num;
-    delete[] p;
-    p = new int[count+1];
-    for(size_t i = 0;i<count;i++)
-    {
-      p[i]=temp[i];
-    }
-    delete[] temp;
+    int num=0;
+    size_t count=0;
+    int * p = nullptr;
     if(!(std::cin>>num))
     {
-      throw std::invalid_argument("ERROR");
+      throw std::invalid_argument("Invalid argument");
     }
+    if(num==0)
+    {
+    p=new int[1];
+    }
+    while(num!=0)
+    {
+      if(p==nullptr)
+      {
+        p = new int[1];
+        p[0]=num;
+      }
+      count+=1;
+      int * temp = new int[count];
+      for(size_t i =0;i<count;i++)
+      {
+        temp[i]=p[i];
+      }
+      temp[count-1]=num;
+      delete[] p;
+      p = new int[count+1];
+      for(size_t i = 0;i<count;i++)
+      {
+        p[i]=temp[i];
+      }
+      delete[] temp;
+      if(!(std::cin>>num))
+      {
+        throw std::invalid_argument("ERROR");
+      }
+    }
+    p[count]=0;
+    return p;
   }
-  p[count]=0;
-  return p;
-}
 
-int Zad6(int*p)
-{
-  if(p[0]==0)
+  int Zad6(int*p)
   {
-    return 0;
+    if(p[0]==0)
+    {
+      return 0;
+    }
+    int count=0;
+    int countnums=0;
+    int highnum=0;
+    int temp=p[0];
+    while(p[count]!=0)
+    {
+      if(p[count]>=temp)
+      {
+      countnums++;
+      }
+      else
+      {
+        countnums=1;
+      }
+      temp=p[count];
+      count++;
+      if(countnums>highnum)
+      {
+        highnum=countnums;
+      }
+    }
+    return highnum;
   }
-  int count=0;
-  int countnums=0;
-  int highnum=0;
-  int temp=p[0];
-  while(p[count]!=0)
-  {
-    if(p[count]>=temp)
-    {
-    countnums++;
-    }
-    else
-    {
-      countnums=1;
-    }
-    temp=p[count];
-    count++;
-    if(countnums>highnum)
-    {
-      highnum=countnums;
-    }
-  }
-  return highnum;
-}
 
-int Zad16(int*p)
-{
-  if(p[0]==0)
+  int Zad16(int*p)
   {
-    return 0;
-  }
-  int count=0;
-  int smallestnum=p[0];
-  int smallestnumcounter=0;
-  while(p[count]!=0)
-  {
-    if(p[count]<smallestnum)
+    if(p[0]==0)
     {
-      smallestnum=p[count];
+      return 0;
     }
-    count++;
-  }
-  count=0;
-  while(p[count]!=0)
-  {
-    if(p[count]==smallestnum)
+    int count=0;
+    int smallestnum=p[0];
+    int smallestnumcounter=0;
+    while(p[count]!=0)
     {
-      smallestnumcounter++;
+      if(p[count]<smallestnum)
+      {
+        smallestnum=p[count];
+      }
+      count++;
     }
-    count++;
+    count=0;
+    while(p[count]!=0)
+    {
+      if(p[count]==smallestnum)
+      {
+        smallestnumcounter++;
+      }
+      count++;
+    }
+    return smallestnumcounter;
   }
-  return smallestnumcounter;
 }
-
 int main()
 {
   int * nums = nullptr;
   try
   {
-  nums = EnterNums();
+  nums = stamboliyski::EnterNums();
   }
   catch(const std::invalid_argument& a)
   {
     std::cerr<<"Program terminated with error code: 1\n";
     return 1;
   }
-  std::cout<<"Output from 6.  : "<<Zad6(nums)<<"\n";
-  std::cout<<"Output from 16. : "<<Zad16(nums)<<"\n";
+  std::cout<<"Output from 6.  : "<<stamboliyski::Zad6(nums)<<"\n";
+  std::cout<<"Output from 16. : "<<stamboliyski::Zad16(nums)<<"\n";
+  return 0;
 }
+
