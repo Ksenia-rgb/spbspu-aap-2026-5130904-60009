@@ -28,13 +28,11 @@ namespace aristov
             }
             else
             {
-                // SGN-CHG
                 if ((prev > 0 && x < 0) || (prev < 0 && x > 0))
                 {
                     ++signChanges;
                 }
 
-                // SUB-MAX
                 if (x > max)
                 {
                     second = max;
@@ -57,7 +55,6 @@ namespace aristov
             }
         }
 
-        // Вывод характеристик
         if (!hasSecond)
         {
             std::cerr << "Cannot calculate SUB-MAX\n";
