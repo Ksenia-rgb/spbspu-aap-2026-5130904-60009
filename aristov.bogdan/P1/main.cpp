@@ -14,35 +14,35 @@ namespace aristov
         int max = 0;
         int second = 0;
         int prev = 0;
-        int signChanges = 0;
-        bool hasValue = false;
-        bool hasSecond = false;
+        int sign_changes = 0;
+        bool has_value = false;
+        bool has_second = false;
 
         while (x != 0)
         {
-            if (!hasValue)
+            if (!has_value)
             {
                 max = x;
                 prev = x;
-                hasValue = true;
+                has_value = true;
             }
             else
             {
                 if ((prev > 0 && x < 0) || (prev < 0 && x > 0))
                 {
-                    ++signChanges;
+                    ++sign_changes;
                 }
 
                 if (x > max)
                 {
                     second = max;
                     max = x;
-                    hasSecond = true;
+                    has_second = true;
                 }
-                else if (!hasSecond || x > second)
+                else if (!has_second || x > second)
                 {
                     second = x;
-                    hasSecond = true;
+                    has_second = true;
                 }
 
                 prev = x;
@@ -55,7 +55,7 @@ namespace aristov
             }
         }
 
-        if (!hasSecond)
+        if (!has_second)
         {
             std::cerr << "Cannot calculate SUB-MAX\n";
         }
@@ -64,9 +64,9 @@ namespace aristov
             std::cout << second << '\n';
         }
 
-        std::cout << signChanges << '\n';
+        std::cout << sign_changes << '\n';
 
-        if (!hasSecond)
+        if (!has_second)
         {
             return 2;
         }
