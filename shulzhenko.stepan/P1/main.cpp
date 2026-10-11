@@ -3,8 +3,8 @@
 int laba()
 {
   int last = 0, cur = 0, next = 0;
-  int INC_SEQ = 0;
-  int GRT_LSS = 0;
+  int inq_seq = 0;
+  int grt_lss = 0;
 
   while (true)
   {
@@ -22,7 +22,7 @@ int laba()
     {
       if (last != 0 && cur < last && cur > next)
       {
-        GRT_LSS += 1;
+        grt_lss += 1;
       }
     }
 
@@ -31,12 +31,12 @@ int laba()
 
     if (last != 0 && cur > last)
     {
-      INC_SEQ += 1;
+      inq_seq += 1;
     }
   }
 
-  std::cout << INC_SEQ << std::endl;
-  std::cout << GRT_LSS << std::endl;
+  std::cout << inq_seq << std::endl;
+  std::cout << grt_lss << std::endl;
   return 0;
 }
 
