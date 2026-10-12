@@ -1,11 +1,11 @@
-#include <exception>
 #include <iostream>
-#include <limits>
+#include <stdexcept>
 
 void parseIn();
 void cleanup();
 
-int main() {
+int main()
+{
   try {
     parseIn();
   } catch (const std::invalid_argument &e) {
@@ -15,7 +15,8 @@ int main() {
   return 0;
 }
 
-void parseIn() {
+void parseIn()
+{
   int stored = 0;
   int stored_old = 0;
   int count_mon_inc = 0;
