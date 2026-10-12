@@ -26,18 +26,14 @@ void parseIn()
     int count_mon_inc = 0;
     int count_mon_inc_old = 0;
     int count_sgn_chg = 0;
-    size_t amount = 0;
-    bool properly_ended = false;
     while (std::cin >> stored)
     {
         if (std::cin.fail())
         {
             throw std::invalid_argument("Bad input, not a proper sequence!\n");
         }
-        amount += 1;
         if (stored == 0)
         {
-            properly_ended = true;
             break;
         }
         if (stored_old != 0)
