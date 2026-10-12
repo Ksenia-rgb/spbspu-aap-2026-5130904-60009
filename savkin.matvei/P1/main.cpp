@@ -1,8 +1,10 @@
 #include <exception>
 #include <iostream>
 #include <limits>
+
 void parseIn();
 void cleanup();
+
 int main()
 {
     try
@@ -16,6 +18,7 @@ int main()
     }
     return 0;
 }
+
 void parseIn()
 {
     int stored = 0;
