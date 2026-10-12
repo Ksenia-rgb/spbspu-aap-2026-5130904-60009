@@ -4,12 +4,12 @@
 
 bool inputNumber(int& value)
 {
-  return static_cast<bool>(std::cin >> value);
+  return static_cast< bool >(std::cin >> value);
 }
 
 bool isSignChanged(int& prev, int& current)
 {
-  return (prev > 0) != (current > 0); 
+  return (prev > 0) != (current > 0);
 }
 
 bool isSecondMaxDefined(unsigned long long n)
@@ -37,13 +37,13 @@ void sgn_chg(int& prev, int& current, unsigned long long& count)
 int main()
 {
   int prev = 0, current = 0;
-  const int minInt = std::numeric_limits <int>::min();
+  const int minInt = std::numeric_limits< int >::min();
   int prevMax = minInt, currentMax = minInt;
   unsigned long long count = 0;
   unsigned long long n = 0;
   while (true) {
     prev = current;
-    if (!inputNumber(current)) { 
+    if (!inputNumber(current)) {
       std::cerr << "Error: input is not a valid sequence\n";
       return 1;
     }
