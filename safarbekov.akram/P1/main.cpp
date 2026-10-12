@@ -10,7 +10,7 @@ int main()
   bool terminated = false;
   bool overflow = false;
 
-  const unsigned long long kMaxCount = std::numeric_limits<unsigned long long>::max();
+  const unsigned long long kMaxCount = std::numeric_limits< unsigned long long >::max();
 
   while (std::cin >> x)
   {
