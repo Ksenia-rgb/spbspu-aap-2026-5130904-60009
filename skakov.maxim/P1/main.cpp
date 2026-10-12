@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdexcept>
 #include <limits>
 
 bool inputNumber(int& value)
@@ -17,17 +16,17 @@ bool isSecondMaxDefined(unsigned long long n)
   return n >= 2;
 }
 
-void sub_max(int& value, int& prevMax, int& currentMax)
+void subMax(int& value, int& prev_max, int& current_max)
 {
-  if (value > currentMax) {
-    prevMax = currentMax;
-    currentMax = value;
-  } else if (value > prevMax) {
-    prevMax = value;
+  if (value > current_max) {
+    prev_max = current_max;
+    current_max = value;
+  } else if (value > prev_max) {
+    prev_max = value;
   }
 }
 
-void sgn_chg(int& prev, int& current, unsigned long long& count)
+void sgnChg(int& prev, int& current, unsigned long long& count)
 {
   if (isSignChanged(prev, current)) {
     ++count;
@@ -37,8 +36,8 @@ void sgn_chg(int& prev, int& current, unsigned long long& count)
 int main()
 {
   int prev = 0, current = 0;
-  const int minInt = std::numeric_limits< int >::min();
-  int prevMax = minInt, currentMax = minInt;
+  const int min_int = std::numeric_limits< int >::min();
+  int prev_max = min_int, current_max = min_int;
   unsigned long long count = 0;
   unsigned long long n = 0;
   while (true) {
@@ -50,7 +49,7 @@ int main()
     if (current == 0) {
       int exitcode = 0;
       if (isSecondMaxDefined(n)) {
-        std::cout << prevMax << '\n';
+        std::cout << prev_max << '\n';
       } else {
         std::cerr << "Error: cannot calculate second maximum\n";
         exitcode = 2;
@@ -58,9 +57,9 @@ int main()
       std::cout << count << '\n';
       return exitcode;
     }
-    sub_max(current, prevMax, currentMax);
+    subMax(current, prev_max, current_max);
     if (n > 0) {
-      sgn_chg(prev, current, count);
+      sgnChg(prev, current, count);
     }
     ++n;
   }
