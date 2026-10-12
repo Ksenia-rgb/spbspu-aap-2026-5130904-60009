@@ -1,57 +1,70 @@
 #include <iostream>
 #include <limits>
 
-void Variant12(int a, int b[3], int* c)
+void Variant1(int a, int b[3], int* c)
 {
-	if (a > b[0])
+	if (b[0] != 0)
 	{
-		b[0] = a;
-		(*c) = 0;
+		if (a > b[0])
+		{
+			(*c)++;
+		}
 	}
-	else
+	b[0] = a;
+}
+void Variant3(int a, int b[3], int* c)
+{
+	if ((*c) < 0)
+	{
+		b[1] = a;
+		(*c) = 1;
+	}
+	else if (a > b[1])
+	{
+		b[1] = a;
+		(*c) = 1;
+	}
+	else if (a == b[1])
 	{
 		(*c)++;
 	}
 }
-void Variant2(int a, int b[3], int* c)
-{
-	if (a > b[2])
-	{
-		b[1] = b[2];
-		b[2] = a;
-	}
-	if (a<b[2] && a>b[1])
-	{
-		b[1] = a;
-	}
-	(*c) = b[1];
-}
 int main()
 {
-	void (*fn[2]) (int,int*,int*) = {Variant12,Variant2};
-	const char* varnames[2] = {"Variant 12","Variant 2"};
-	int rs[2] = { 0 };
-	int cyclst[3] = {std::numeric_limits<int>::min()};
+	void (*fn[2]) (int, int*, int*) = { Variant1,Variant3 };
+	const char* varnames[2] = { "Variant 1","Variant 3" };
+	int rs[2] = { 0, -1 };
+	int cyclst[3] = { 0 };
+	while (true)
+	{
+		int a = 0;
+		std::cin >> a;
+		if (std::cin.fail() || std::cin.eof())
+		{
+			std::cerr << "input error";
+			return 1;
+		}
+		if (a == 0)
+		{
+			break;
+		}
+		for (int i = 0; i < 2; i++)
+		{
+			fn[i](a, cyclst, rs + i);
+		}
+	}
+	bool err = false;
 	for (int i = 0; i < 2; i++)
 	{
-		std::cout << varnames[i]<<std::endl;
-		while (true)
+		if (rs[i] < 0)
 		{
-			int a = 0;
-			std::cin >> a;
-			if (std::cin.fail() || std::cin.eof())
-			{
-				std::cerr << "input error";
-				return 1;
-			}
-			if (a == 0)
-			{
-				break;
-			}
-
-			fn[i](a, cyclst, rs+i);
+			std::cerr << varnames[i] << ": cannot compute" << std::endl;
+			err = true;
 		}
-		std::cout << rs[i] << std::endl;
-		
+		else
+		{
+			std::cout << rs[i] << std::endl;
+		}
 	}
+	return error ? 2 : 0;
 }
