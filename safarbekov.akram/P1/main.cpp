@@ -3,14 +3,14 @@
 
 int main()
 {
-  long long x;
-  long long maxValue;
+  long long x = 0;
+  long long max_value = 0;
   unsigned long long after = 0;
-  bool hasElements = false;
+  bool has_elements = false;
   bool terminated = false;
   bool overflow = false;
 
-  const unsigned long long kMaxCount = std::numeric_limits< unsigned long long >::max();
+  const unsigned long long k_max_count = std::numeric_limits< unsigned long long >::max();
 
   while (std::cin >> x)
   {
@@ -19,15 +19,15 @@ int main()
       terminated = true;
       break;
     }
-    if (!hasElements || x > maxValue)
+    if (!has_elements || x > max_value)
     {
-      maxValue = x;
+      max_value = x;
       after = 0;
-      hasElements = true;
+      has_elements = true;
     }
     else
     {
-      if (after == kMaxCount)
+      if (after == k_max_count)
       {
         overflow = true;
       }
@@ -44,7 +44,7 @@ int main()
     return 1;
   }
 
-  if (!hasElements || overflow)
+  if (!has_elements || overflow)
   {
     std::cerr << "Error: cannot calculate AFT-MAX\n";
     return 2;
