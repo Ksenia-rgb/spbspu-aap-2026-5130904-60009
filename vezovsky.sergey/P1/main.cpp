@@ -12,7 +12,7 @@ int podschet()
       break;
     }
     b++;
-    if ((long long)c1 + c2 == a && b >= 3) {
+    if (c1 + c2 == a && b >= 3) {
       chet++;
     }
     if (b >= 2 && a > c2) {
