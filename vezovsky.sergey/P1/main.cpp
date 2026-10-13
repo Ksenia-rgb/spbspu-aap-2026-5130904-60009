@@ -1,5 +1,6 @@
 #include <iostream>
-
+namespace vezovsky
+{
 int podschet()
 {
   int a = 1, b = 0, chet = 0, c1 = 0, c2 = 0, chet2 = 0;
@@ -31,8 +32,10 @@ int podschet()
   std::cout << chet2 << "\n";
   return res;
 }
+}
 
 int main()
 {
-  return podschet();
+  return vezovsky::podschet();
 }
+
