@@ -3,7 +3,7 @@
 namespace sokolova {
   int maxDecreasingLength()
   {
-    int n;
+    int n = 0;
     std::cin >> n;
 
     if (n == 0) {
@@ -34,7 +34,7 @@ namespace sokolova {
 
   int number4()
   {
-    int x;
+    int x = 0;
     std::cin >> x;
 
     if (x == 0) {
