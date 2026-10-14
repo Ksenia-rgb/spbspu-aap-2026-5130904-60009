@@ -12,7 +12,7 @@ namespace sokolova {
 
     int prev = n;
     int len = 1;
-    int maxLen = 1;
+    int max_len = 1;
 
     while (std::cin >> n && n != 0) {
       if (n <= prev) {
@@ -21,14 +21,14 @@ namespace sokolova {
         len = 1;
       }
 
-      if (len > maxLen) {
-        maxLen = len;
+      if (len > max_len) {
+        max_len = len;
       }
 
       prev = n;
     }
 
-    std::cout << maxLen << std::endl;
+    std::cout << max_len << std::endl;
     return 0;
   }
 
@@ -44,7 +44,7 @@ namespace sokolova {
 
     int prev = x;
     int len = 1;
-    int maxLen = 1;
+    int max_len = 1;
 
     while (std::cin >> x && x != 0) {
       if (x == prev) {
@@ -53,14 +53,14 @@ namespace sokolova {
         len = 1;
       }
 
-      if (len > maxLen) {
-        maxLen = len;
+      if (len > max_len) {
+        max_len = len;
       }
 
       prev = x;
     }
 
-    std::cout << maxLen << std::endl;
+    std::cout << max_len << std::endl;
     return 0;
   }
 }
