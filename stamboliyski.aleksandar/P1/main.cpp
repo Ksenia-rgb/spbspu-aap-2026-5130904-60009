@@ -143,8 +143,8 @@ int main()
     return 1;
   }
 
-  std::cout << "Output from 6.  : " << stamboliyski::zadOne(nums) << "\n";
-  std::cout << "Output from 16. : " << stamboliyski::zadTwo(nums) << "\n";
+  std::cout << stamboliyski::zadOne(nums) << "\n";
+  std::cout << stamboliyski::zadTwo(nums) << "\n";
 
   return 0;
 }
