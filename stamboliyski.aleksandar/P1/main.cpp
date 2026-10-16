@@ -1,9 +1,10 @@
 #include <iostream>
 #include <stdexcept>
+#include <cstddef>
 
 namespace stamboliyski
 {
-  int *enter_nums()
+  int *enterNums()
   {
     int num = 0;
     std::size_t count = 0;
@@ -28,7 +29,7 @@ namespace stamboliyski
       }
 
       count += 1;
-      int *temp = new int[count];
+      int *const temp = new int[count];
 
       for (std::size_t i = 0; i < count; i++)
       {
@@ -56,7 +57,7 @@ namespace stamboliyski
     return p;
   }
 
-  int zad_one(const int *p)
+  int zadOne(const int *p)
   {
     if (p[0] == 0)
     {
@@ -91,7 +92,7 @@ namespace stamboliyski
     return highnum;
   }
 
-  int zad_two(const int *p)
+  int zadTwo(const int *p)
   {
     if (p[0] == 0)
     {
@@ -126,7 +127,7 @@ namespace stamboliyski
 
     return smallestnumcounter;
   }
-} // namespace stamboliyski
+}
 
 int main()
 {
@@ -134,7 +135,7 @@ int main()
 
   try
   {
-    nums = stamboliyski::enter_nums();
+    nums = stamboliyski::enterNums();
   }
   catch (const std::invalid_argument &)
   {
@@ -142,8 +143,8 @@ int main()
     return 1;
   }
 
-  std::cout << "Output from 6.  : " << stamboliyski::zad_one(nums) << "\n";
-  std::cout << "Output from 16. : " << stamboliyski::zad_two(nums) << "\n";
+  std::cout << "Output from 6.  : " << stamboliyski::zadOne(nums) << "\n";
+  std::cout << "Output from 16. : " << stamboliyski::zadTwo(nums) << "\n";
 
   return 0;
 }
