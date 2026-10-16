@@ -12,6 +12,7 @@ namespace stamboliyski
 
     if (!(std::cin >> num))
     {
+      delete[] p;
       throw std::invalid_argument("Invalid argument");
     }
 
@@ -49,6 +50,7 @@ namespace stamboliyski
 
       if (!(std::cin >> num))
       {
+        delete[] p;
         throw std::invalid_argument("ERROR");
       }
     }
@@ -145,6 +147,6 @@ int main()
 
   std::cout << stamboliyski::zadOne(nums) << "\n";
   std::cout << stamboliyski::zadTwo(nums) << "\n";
-
+  delete[] nums;
   return 0;
 }
