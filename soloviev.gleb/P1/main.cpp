@@ -1,7 +1,6 @@
 #include <iostream>
-#include <limits>
 
-void Variant1(int a, int b[3], int *c) {
+void variant1(int a, int b[3], int *c) {
   if (b[0] != 0) {
     if (a > b[0]) {
       (*c)++;
@@ -9,7 +8,7 @@ void Variant1(int a, int b[3], int *c) {
   }
   b[0] = a;
 }
-void Variant3(int a, int b[3], int *c) {
+void variant3(int a, int b[3], int *c) {
   if ((*c) < 0) {
     b[1] = a;
     (*c) = 1;
@@ -21,8 +20,8 @@ void Variant3(int a, int b[3], int *c) {
   }
 }
 int main() {
-  void (*fn[2])(int, int *, int *) = {Variant1, Variant3};
-  const char *varnames[2] = {"Variant 1", "Variant 3"};
+  void (*const fn[2])(int, int *, int *) = {variant1, variant3};
+  const char *const varnames[2] = {"Variant 1", "Variant 3"};
   int rs[2] = {0, -1};
   int cyclst[3] = {0};
   while (true) {
