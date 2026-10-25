@@ -114,137 +114,137 @@ int main(int argc, char **argv)
 {
   size_t rows;
   size_t cols;
-  const char * mode = argv[1];
+  const char *mode = argv[1];
   try
   {
-    if(mode[0] != '1' && mode[0] != '2')
+    if (mode[0] != '1' && mode[0] != '2')
     {
       throw std::invalid_argument("Invalid mode");
     }
   }
-  catch(const std::invalid_argument& e)
+  catch (const std::invalid_argument &e)
   {
-    std::cerr<<"Invalid mode\n";
+    std::cerr << "Invalid mode\n";
     return 1;
   }
-  const char * inputpath = argv[2];
-  const char * outputpath = argv[3];
+  const char *inputpath = argv[2];
+  const char *outputpath = argv[3];
   std::ifstream input(inputpath);
   try
   {
-    if(!input.is_open())
+    if (!input.is_open())
     {
       throw std::invalid_argument("input did not open");
     }
   }
-  catch(const std::invalid_argument& e)
+  catch (const std::invalid_argument &e)
   {
-    std::cerr<<"Input did not open\n";
+    std::cerr << "Input did not open\n";
     return 1;
   }
   try
   {
-    if(!(input >> rows >> cols))
+    if (!(input >> rows >> cols))
     {
       throw std::invalid_argument("invalid row/col input");
     }
   }
-  catch(const std::invalid_argument& e)
+  catch (const std::invalid_argument &e)
   {
-    std::cerr<<"Invalid cow/rol input\n";
+    std::cerr << "Invalid cow/rol input\n";
     return 2;
   }
 
-  if(mode[0] =='1')
+  if (mode[0] == '1')
   {
     int matrix[100][100];
     try
     {
-    for(size_t i = 0;i<rows;i++)
-    {
-      for(size_t j = 0;j<cols;j++)
+      for (size_t i = 0; i < rows; i++)
       {
-        if(!(input>>matrix[i][j]))
+        for (size_t j = 0; j < cols; j++)
         {
-          throw std::invalid_argument("invalid input into matrix");
+          if (!(input >> matrix[i][j]))
+          {
+            throw std::invalid_argument("invalid input into matrix");
+          }
         }
       }
     }
-    }
-    catch(const std::invalid_argument& e)
+    catch (const std::invalid_argument &e)
     {
-      std::cerr<<"Invalid input into matrix";
+      std::cerr << "Invalid input into matrix";
       return 2;
     }
     input.close();
     std::ofstream output(outputpath);
     try
     {
-    if(!output.is_open())
-    {
-      throw std::invalid_argument("output did not open");
+      if (!output.is_open())
+      {
+        throw std::invalid_argument("output did not open");
+      }
     }
-    }
-    catch(const std::invalid_argument& e)
+    catch (const std::invalid_argument &e)
     {
-      std::cerr<<"Output did not open";
+      std::cerr << "Output did not open";
       return 1;
     }
-    output<<stamboliyski::sedelementmodeone(rows, cols, matrix)<<"\n";
-    output<<stamboliyski::equalcolumnnumone(rows, cols, matrix);
+    output << stamboliyski::sedelementmodeone(rows, cols, matrix) << "\n";
+    output << stamboliyski::equalcolumnnumone(rows, cols, matrix);
     output.close();
   }
-  if(mode[0] =='2')
+  if (mode[0] == '2')
   {
-    int ** matrix = new int *[rows];
+    int **matrix = new int *[rows];
     try
     {
-      for(size_t i ; i<rows;i++)
+      for (size_t i; i < rows; i++)
       {
-        matrix[i]=new int[cols];
+        matrix[i] = new int[cols];
       }
     }
-    catch(const std::bad_alloc& e)
+    catch (const std::bad_alloc &e)
     {
-      std::cerr<<"Bad alloc at matrix creation";
+      std::cerr << "Bad alloc at matrix creation";
       return 2;
     }
     try
     {
-    for(size_t i = 0;i<rows;i++)
-    {
-      for(size_t j = 0;j<cols;j++)
+      for (size_t i = 0; i < rows; i++)
       {
-        if(!(input>>matrix[i][j]))
+        for (size_t j = 0; j < cols; j++)
         {
-          throw std::invalid_argument("invalid input into matrix");
+          if (!(input >> matrix[i][j]))
+          {
+            throw std::invalid_argument("invalid input into matrix");
+          }
         }
       }
     }
-    }
-    catch(const std::invalid_argument& e)
+    catch (const std::invalid_argument &e)
     {
-      std::cerr<<"Invalid input into matrix";
+      std::cerr << "Invalid input into matrix";
       return 2;
     }
     input.close();
     std::ofstream output(outputpath);
     try
     {
-    if(!output.is_open())
-    {
-      throw std::invalid_argument("output did not open");
+      if (!output.is_open())
+      {
+        throw std::invalid_argument("output did not open");
+      }
     }
-    }
-    catch(const std::invalid_argument& e)
+    catch (const std::invalid_argument &e)
     {
-      std::cerr<<"Output did not open";
+      std::cerr << "Output did not open";
       return 1;
     }
-    output<<stamboliyski::sedelementmodetwo(rows, cols, matrix)<<"\n";
-    output<<stamboliyski::equalcolumnnumtwo(rows, cols, matrix);
+    output << stamboliyski::sedelementmodetwo(rows, cols, matrix) << "\n";
+    output << stamboliyski::equalcolumnnumtwo(rows, cols, matrix);
     output.close();
-    for(size_t i = 0;i<rows;i++)
+    for (size_t i = 0; i < rows; i++)
     {
       delete[] matrix[i];
     }
