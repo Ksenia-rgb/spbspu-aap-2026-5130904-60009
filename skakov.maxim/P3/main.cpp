@@ -80,8 +80,8 @@ namespace skakov {
     bool is_first = true;
     long long min_sum = 0;
     for (std::size_t s = 0; s <= rows + cols - 2; ++s) {
-      std::size_t i_begin = s >= cols ? s - (cols - 1) : 0;
-      std::size_t i_end = s < rows ? s : rows - 1;
+      const std::size_t i_begin = s >= cols ? s - (cols - 1) : 0;
+      const std::size_t i_end = s < rows ? s : rows - 1;
 
       long long sum = 0;
       for (std::size_t i = i_begin; i <= i_end; ++i) {
@@ -118,7 +118,7 @@ namespace skakov {
 
   void runDynamic(std::istream& input, std::ostream& output, std::size_t rows, std::size_t cols)
   {
-    int* matrix = new int[rows * cols];
+    int* const matrix = new int[rows * cols];
     try {
       processMatrix(input, output, matrix, rows, cols);
     } catch (...) {
@@ -135,7 +135,7 @@ namespace skakov {
         throw LabError{arguments_error, "invalid number of arguments"};
       }
 
-      const char* mode = argv[1];
+      const char* const mode = argv[1];
       const bool is_fixed = mode[0] == '1' && mode[1] == '\0';
       const bool is_dynamic = mode[0] == '2' && mode[1] == '\0';
       if (!is_fixed && !is_dynamic) {
