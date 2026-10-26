@@ -89,8 +89,7 @@ int main(int argc, char **argv)
 
   if (IS_DYNAMIC)
   {
-    if (TOTAL_LONG > static_cast< long long >(
-        numeric_limits< size_t >::max() / sizeof(int)))
+    if (TOTAL_LONG > static_cast< long long >(numeric_limits< size_t >::max() / sizeof(int)))
     {
       cerr << "Matrix is too large\n";
       return ERROR_INPUT;
