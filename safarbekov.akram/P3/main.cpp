@@ -86,7 +86,20 @@ namespace safarbekov
       if (!has_repeat)
       {
         ++count;
-      }t res_9 = count_columns_without_repeats(data, rows, cols);
+      }
+    }
+    return count;
+  }
+
+  bool write_results(const char* output_name, const int* data, int rows, int cols)
+  {
+    std::ofstream out(output_name);
+    if (!out)
+    {
+      return false;
+    }
+    int res_2 = count_local_minima(data, rows, cols);
+    int res_9 = count_columns_without_repeats(data, rows, cols);
     out << res_2 << '\n';
     out << res_9 << '\n';
     return static_cast< bool >(out);
@@ -162,16 +175,3 @@ int main(int argc, char* argv[])
   }
   return 0;
 }
-    }
-    return count;
-  }
-
-  bool write_results(const char* output_name, const int* data, int rows, int cols)
-  {
-    std::ofstream out(output_name);
-    if (!out)
-    {
-      return false;
-    }
-    int res_2 = count_local_minima(data, rows, cols);
-    in
