@@ -36,7 +36,6 @@ namespace safarbekov
     return true;
   }
 
-  // Вариант 2: количество локальных минимумов
   int count_local_minima(const int* data, int rows, int cols)
   {
     int count = 0;
@@ -70,7 +69,6 @@ namespace safarbekov
     return count;
   }
 
-  // Вариант 9: количество столбцов без подряд идущих одинаковых элементов
   int count_columns_without_repeats(const int* data, int rows, int cols)
   {
     int count = 0;
