@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
   }
 
   int mode = 0;
-  if (!safarbekow::parse_mode(argv[1], mode))
+  if (!safarbekov::parse_mode(argv[1], mode))
   {
     std::cerr << "Error: first parameter must be 1 or 2\n";
     return 1;
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 
   int rows = 0;
   int cols = 0;
-  if (!safarbekow::read_dimensions(in, rows, cols))
+  if (!safarbekov::read_dimensions(in, rows, cols))
   {
     std::cerr << "Error: input is not a matrix\n";
     return 2;
@@ -139,18 +139,18 @@ int main(int argc, char* argv[])
 
   if (mode == 1)
   {
-    if (count > safarbekow::max_fixed_size)
+    if (count > safarbekov::max_fixed_size)
     {
       std::cerr << "Error: matrix is too large for fixed array\n";
       return 2;
     }
-    int data[safarbekow::max_fixed_size] = {};
-    if (!safarbekow::read_elements(in, data, count))
+    int data[safarbekov::max_fixed_size] = {};
+    if (!safarbekov::read_elements(in, data, count))
     {
       std::cerr << "Error: input is not a matrix\n";
       return 2;
     }
-    if (!safarbekow::write_results(argv[3], data, rows, cols))
+    if (!safarbekov::write_results(argv[3], data, rows, cols))
     {
       std::cerr << "Error: cannot write output file\n";
       return 2;
@@ -159,13 +159,13 @@ int main(int argc, char* argv[])
   else
   {
     int* data = new int[count];
-    if (!safarbekow::read_elements(in, data, count))
+    if (!safarbekov::read_elements(in, data, count))
     {
       delete[] data;
       std::cerr << "Error: input is not a matrix\n";
       return 2;
     }
-    bool is_written = safarbekow::write_results(argv[3], data, rows, cols);
+    bool is_written = safarbekov::write_results(argv[3], data, rows, cols);
     delete[] data;
     if (!is_written)
     {
