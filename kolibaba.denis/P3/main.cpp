@@ -7,10 +7,10 @@ namespace kolibaba {
 void process_data(int** mat, size_t r, size_t c, std::ostream& out) {
     int max_sum = 0;
     bool first = true;
-    
+
     for (size_t k = 0; k <= r + c - 2; ++k) {
-        if (k == c - 1) continue; 
-        
+        if (k == c - 1) continue;
+
         int sum = 0;
         for (size_t i = 0; i < r; ++i) {
             size_t j = k - i;
@@ -45,7 +45,7 @@ void process_data(int** mat, size_t r, size_t c, std::ostream& out) {
     out << cnt << "\n";
 }
 
-} 
+}
 
 int main(int argc, char** argv) {
     if (argc != 4) {
@@ -91,12 +91,12 @@ int main(int argc, char** argv) {
                 }
             }
         }
-        
+
         int* ptrs[100];
         for (size_t i = 0; i < r; ++i) {
             ptrs[i] = mat[i];
         }
-        
+
         kolibaba::process_data(ptrs, r, c, out);
     } else if (mode == 2) {
         int** mat = new int*[r];
