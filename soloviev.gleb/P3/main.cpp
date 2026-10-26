@@ -15,7 +15,7 @@ constexpr int MAX_MODE = 2;
 constexpr int ERROR_ARGS = 1;
 constexpr int ERROR_INPUT = 2;
 
-int main(int argc, char ** argv)
+int main(int argc, char **argv)
 {
   if (argc != 4)
   {
@@ -30,24 +30,24 @@ int main(int argc, char ** argv)
   }
 
   int mode = 0;
-  bool outOfRange = false;
-  for (const char * p = argv[1]; *p; ++p)
+  bool out_of_range = false;
+  for (const char *p = argv[1]; *p; ++p)
   {
     if (*p < DIGIT_ZERO || *p > DIGIT_NINE)
     {
       cerr << "First parameter is not a number\n";
       return ERROR_ARGS;
     }
-    if (!outOfRange)
+    if (!out_of_range)
     {
       mode = mode * 10 + (*p - DIGIT_ZERO);
       if (mode > MAX_MODE)
       {
-        outOfRange = true;
+        out_of_range = true;
       }
     }
   }
-  if (outOfRange || mode < MODE_FIXED)
+  if (out_of_range || mode < MODE_FIXED)
   {
     cerr << "First parameter is out of range\n";
     return ERROR_ARGS;
@@ -75,21 +75,22 @@ int main(int argc, char ** argv)
     return ERROR_INPUT;
   }
 
-  const long long totalLong = static_cast<long long>(rows) * cols;
-  if (mode == MODE_FIXED && totalLong > MAX_FIXED_SIZE)
+  const long long TOTAL_LONG = static_cast< long long >(rows) * cols;
+  if (mode == MODE_FIXED && TOTAL_LONG > MAX_FIXED_SIZE)
   {
     cerr << "Matrix is too large for fixed storage\n";
     return ERROR_INPUT;
   }
 
-  const size_t total = static_cast<size_t>(totalLong);
-  const bool isDynamic = (mode == MODE_DYNAMIC);
+  const size_t total = static_cast< size_t >(TOTAL_LONG);
+  const bool IS_DYNAMIC = (mode == MODE_DYNAMIC);
   int fixed[MAX_FIXED_SIZE] = {};
-  int * a = fixed;
+  int *a = fixed;
 
-  if (isDynamic)
+  if (IS_DYNAMIC)
   {
-    if (totalLong > static_cast<long long>(numeric_limits<size_t>::max() / sizeof(int)))
+    if (TOTAL_LONG > static_cast< long long >(
+        numeric_limits< size_t >::max() / sizeof(int)))
     {
       cerr << "Matrix is too large\n";
       return ERROR_INPUT;
@@ -109,7 +110,7 @@ int main(int argc, char ** argv)
   {
     if (!(in >> a[i]))
     {
-      if (isDynamic)
+      if (IS_DYNAMIC)
       {
         delete[] a;
       }
@@ -121,7 +122,7 @@ int main(int argc, char ** argv)
   char extra = 0;
   if (in >> extra)
   {
-    if (isDynamic)
+    if (IS_DYNAMIC)
     {
       delete[] a;
     }
@@ -132,31 +133,31 @@ int main(int argc, char ** argv)
   int ans = 0;
   if (rows > 0 && cols > 0)
   {
-    int bestLen = 0;
+    int best_len = 0;
     for (int col = 0; col < cols; ++col)
     {
-      int curLen = 1;
-      int maxLen = 1;
+      int cur_len = 1;
+      int max_len = 1;
       for (int row = 1; row < rows; ++row)
       {
-        const size_t idxPrev = static_cast<size_t>(row - 1) * cols + col;
-        const size_t idxCur = static_cast<size_t>(row) * cols + col;
-        if (a[idxPrev] == a[idxCur])
+        const size_t IDX_PREV = static_cast< size_t >(row - 1) * cols + col;
+        const size_t IDX_CUR = static_cast< size_t >(row) * cols + col;
+        if (a[IDX_PREV] == a[IDX_CUR])
         {
-          ++curLen;
-          if (curLen > maxLen)
+          ++cur_len;
+          if (cur_len > max_len)
           {
-            maxLen = curLen;
+            max_len = cur_len;
           }
         }
         else
         {
-          curLen = 1;
+          cur_len = 1;
         }
       }
-      if (maxLen > bestLen)
+      if (max_len > best_len)
       {
-        bestLen = maxLen;
+        best_len = max_len;
         ans = col + 1;
       }
     }
@@ -176,30 +177,30 @@ int main(int argc, char ** argv)
     int delta = 0;
     switch (side)
     {
-      case 0:
-        pos = bottom * cols + left;
-        len = right - left + 1;
-        delta = 1;
-        --bottom;
-        break;
-      case 1:
-        pos = bottom * cols + right;
-        len = bottom - top + 1;
-        delta = -cols;
-        --right;
-        break;
-      case 2:
-        pos = top * cols + right;
-        len = right - left + 1;
-        delta = -1;
-        ++top;
-        break;
-      default:
-        pos = top * cols + left;
-        len = bottom - top + 1;
-        delta = cols;
-        ++left;
-        break;
+    case 0:
+      pos = bottom * cols + left;
+      len = right - left + 1;
+      delta = 1;
+      --bottom;
+      break;
+    case 1:
+      pos = bottom * cols + right;
+      len = bottom - top + 1;
+      delta = -cols;
+      --right;
+      break;
+    case 2:
+      pos = top * cols + right;
+      len = right - left + 1;
+      delta = -1;
+      ++top;
+      break;
+    default:
+      pos = top * cols + left;
+      len = bottom - top + 1;
+      delta = cols;
+      ++left;
+      break;
     }
     for (int i = 0; i < len && visited < total; ++i, pos += delta)
     {
@@ -217,7 +218,7 @@ int main(int argc, char ** argv)
   }
   out << '\n';
 
-  if (isDynamic)
+  if (IS_DYNAMIC)
   {
     delete[] a;
   }
