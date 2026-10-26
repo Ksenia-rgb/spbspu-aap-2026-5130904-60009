@@ -5,7 +5,7 @@ namespace safarbekov
 {
   const int max_fixed_size = 10000;
 
-  bool parse_mode(const char* arg, int& mode)
+  bool parseMode(const char* arg, int& mode)
   {
     if ((arg[0] == '1' || arg[0] == '2') && arg[1] == '\0')
     {
@@ -15,7 +15,7 @@ namespace safarbekov
     return false;
   }
 
-  bool read_dimensions(std::istream& in, int& rows, int& cols)
+  bool readDimensions(std::istream& in, int& rows, int& cols)
   {
     if (!(in >> rows >> cols))
     {
@@ -24,7 +24,7 @@ namespace safarbekov
     return rows >= 0 && cols >= 0;
   }
 
-  bool read_elements(std::istream& in, int* data, long long count)
+  bool readElements(std::istream& in, int* data, long long count)
   {
     for (long long i = 0; i < count; ++i)
     {
@@ -36,14 +36,14 @@ namespace safarbekov
     return true;
   }
 
-  int count_local_minima(const int* data, int rows, int cols)
+  int countLocalMinima(const int* data, int rows, int cols)
   {
     int count = 0;
     for (int i = 1; i < rows - 1; ++i)
     {
       for (int j = 1; j < cols - 1; ++j)
       {
-        int value = data[i * cols + j];
+        const int value = data[i * cols + j];
         bool is_min = true;
         for (int di = -1; di <= 1 && is_min; ++di)
         {
@@ -69,7 +69,7 @@ namespace safarbekov
     return count;
   }
 
-  int count_columns_without_repeats(const int* data, int rows, int cols)
+  int countColumnsWithoutRepeats(const int* data, int rows, int cols)
   {
     int count = 0;
     for (int j = 0; j < cols; ++j)
@@ -91,15 +91,15 @@ namespace safarbekov
     return count;
   }
 
-  bool write_results(const char* output_name, const int* data, int rows, int cols)
+  bool writeResults(const char* output_name, const int* data, int rows, int cols)
   {
     std::ofstream out(output_name);
     if (!out)
     {
       return false;
     }
-    int res_2 = count_local_minima(data, rows, cols);
-    int res_9 = count_columns_without_repeats(data, rows, cols);
+    const int res_2 = countLocalMinima(data, rows, cols);
+    const int res_9 = countColumnsWithoutRepeats(data, rows, cols);
     out << res_2 << '\n';
     out << res_9 << '\n';
     return static_cast< bool >(out);
@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
   }
 
   int mode = 0;
-  if (!safarbekov::parse_mode(argv[1], mode))
+  if (!safarbekov::parseMode(argv[1], mode))
   {
     std::cerr << "Error: first parameter must be 1 or 2\n";
     return 1;
@@ -130,12 +130,12 @@ int main(int argc, char* argv[])
 
   int rows = 0;
   int cols = 0;
-  if (!safarbekov::read_dimensions(in, rows, cols))
+  if (!safarbekov::readDimensions(in, rows, cols))
   {
     std::cerr << "Error: input is not a matrix\n";
     return 2;
   }
-  long long count = static_cast< long long >(rows) * cols;
+  const long long count = static_cast< long long >(rows) * cols;
 
   if (mode == 1)
   {
@@ -145,12 +145,12 @@ int main(int argc, char* argv[])
       return 2;
     }
     int data[safarbekov::max_fixed_size] = {};
-    if (!safarbekov::read_elements(in, data, count))
+    if (!safarbekov::readElements(in, data, count))
     {
       std::cerr << "Error: input is not a matrix\n";
       return 2;
     }
-    if (!safarbekov::write_results(argv[3], data, rows, cols))
+    if (!safarbekov::writeResults(argv[3], data, rows, cols))
     {
       std::cerr << "Error: cannot write output file\n";
       return 2;
@@ -158,14 +158,14 @@ int main(int argc, char* argv[])
   }
   else
   {
-    int* data = new int[count];
-    if (!safarbekov::read_elements(in, data, count))
+    int* const data = new int[count];
+    if (!safarbekov::readElements(in, data, count))
     {
       delete[] data;
       std::cerr << "Error: input is not a matrix\n";
       return 2;
     }
-    bool is_written = safarbekov::write_results(argv[3], data, rows, cols);
+    const bool is_written = safarbekov::writeResults(argv[3], data, rows, cols);
     delete[] data;
     if (!is_written)
     {
