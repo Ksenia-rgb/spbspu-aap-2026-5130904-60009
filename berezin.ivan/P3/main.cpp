@@ -82,25 +82,64 @@ namespace berezin
     return max_length_col;
   }
 
-  std::size_t cntRowNsm(const int* matrix, std::size_t rows, std::size_t cols)
+  void lftTopClk(int* matrix, std::size_t rows, std::size_t cols)
   {
-    std::size_t result = 0;
-    for (std::size_t i = 0; i < rows; i++)
+    if ((rows == 0) || (cols == 0))
     {
-      bool has_repeats = false;
-      for (std::size_t j = 1; (j < cols) && !has_repeats; j++)
-      {
-        has_repeats = (matrix[i * cols + j] == matrix[i * cols + j - 1]);
-      }
-      if (!has_repeats)
-      {
-        result++;
-      }
+      return;
     }
-    return result;
+
+    std::size_t top = 0;
+    std::size_t bottom = rows - 1;
+    std::size_t left = 0;
+    std::size_t right = cols - 1;
+    int step = 1;
+
+    while ((top <= bottom) && (left <= right))
+    {
+      for (std::size_t j = left; j <= right; j++, step++)
+      {
+        matrix[top * cols + j] -= step;
+      }
+      for (std::size_t i = top + 1; i <= bottom; i++, step++)
+      {
+        matrix[i * cols + right] -= step;
+      }
+      if (top < bottom)
+      {
+        for (std::size_t j = right; j > left; j--, step++)
+        {
+          matrix[bottom * cols + j - 1] -= step;
+        }
+      }
+      if (left < right)
+      {
+        for (std::size_t i = bottom; i > top + 1; i--, step++)
+        {
+          matrix[(i - 1) * cols + left] -= step;
+        }
+      }
+      if ((bottom == 0) || (right == 0))
+      {
+        break;
+      }
+      top++;
+      left++;
+      bottom--;
+      right--;
+    }
   }
 
-  int numColLsrAndCntRowNsm(std::istream& input, std::ostream& output, int* matrix, std::size_t rows, std::size_t cols)
+  void printMatrix(std::ostream& output, const int* matrix, std::size_t rows, std::size_t cols)
+  {
+    output << rows << ' ' << cols;
+    for (std::size_t i = 0; i < rows * cols; i++)
+    {
+      output << ' ' << matrix[i];
+    }
+  }
+
+  int numColLsrAndLftTopClk(std::istream& input, std::ostream& output, int* matrix, std::size_t rows, std::size_t cols)
   {
     if (!readElements(input, matrix, rows * cols))
     {
@@ -116,7 +155,9 @@ namespace berezin
     }
 
     output << numColLsr(matrix, rows, cols) << '\n';
-    output << cntRowNsm(matrix, rows, cols) << '\n';
+    lftTopClk(matrix, rows, cols);
+    printMatrix(output, matrix, rows, cols);
+    output << '\n';
     if (!output)
     {
       std::cerr << "Error: cannot write in output file\n";
@@ -173,7 +214,7 @@ namespace berezin
         return invalidMatrixError;
       }
       int matrix[maxFixedSize] = {};
-      return numColLsrAndCntRowNsm(input, output, matrix, rows, cols);
+      return numColLsrAndLftTopClk(input, output, matrix, rows, cols);
     }
 
     int* matrix = nullptr;
@@ -187,7 +228,7 @@ namespace berezin
       return invalidMatrixError;
     }
 
-    const int result = numColLsrAndCntRowNsm(input, output, matrix, rows, cols);
+    const int result = numColLsrAndLftTopClk(input, output, matrix, rows, cols);
 
     delete[] matrix;
     return result;
