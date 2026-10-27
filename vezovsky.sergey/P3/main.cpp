@@ -21,7 +21,6 @@ namespace vezovsky
     return cols == 0 || rows <= std::numeric_limits< std::size_t >::max() / cols;
   }
 
-  // Вариант 11 [NUM-COL-LSR]
   std::size_t findColumnWithLongestRun(const int* data, std::size_t rows, std::size_t cols)
   {
     if (rows == 0 || cols == 0)
@@ -46,7 +45,6 @@ namespace vezovsky
     return bestColumn;
   }
 
-  // Вариант 6 [LFT-BOT-CNT]: top, left - включающие границы; bottom, right - исключающие
   void addSpiral(int* data, std::size_t rows, std::size_t cols)
   {
     std::size_t top = 0, left = 0, bottom = rows, right = cols;
@@ -180,6 +178,4 @@ int main(int argc, char** argv)
 {
   return vezovsky::runLab(argc, argv);
 }
-
-
 
