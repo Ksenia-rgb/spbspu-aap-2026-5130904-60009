@@ -19,18 +19,18 @@ namespace berezin
 
   bool readSize(std::istream& input, std::size_t& rows, std::size_t& cols)
   {
-    long long int rowsValue = 0;
-    long long int colsValue = 0;
-    if (!(input >> rowsValue >> colsValue))
+    long long int rows_value = 0;
+    long long int cols_value = 0;
+    if (!(input >> rows_value >> cols_value))
     {
       return false;
     }
-    if ((rowsValue < 0) || (colsValue < 0))
+    if ((rows_value < 0) || (cols_value < 0))
     {
       return false;
     }
-    rows = static_cast< std::size_t >(rowsValue);
-    cols = static_cast< std::size_t >(colsValue);
+    rows = static_cast< std::size_t >(rows_value);
+    cols = static_cast< std::size_t >(cols_value);
     if ((cols != 0) && (rows > (std::numeric_limits< std::size_t >::max() / cols)))
     {
       return false;
@@ -38,9 +38,9 @@ namespace berezin
     return true;
   }
 
-  bool readElements(std::istream& input, int* matrix, std::size_t matrixSize)
+  bool readElements(std::istream& input, int* matrix, std::size_t matrix_size)
   {
-    for (std::size_t i = 0; i < matrixSize; i++)
+    for (std::size_t i = 0; i < matrix_size; i++)
     {
       if (!(input >> matrix[i]))
       {
@@ -57,8 +57,8 @@ namespace berezin
       return 0;
     }
 
-    std::size_t maxLength = 1;
-    std::size_t maxLengthCol = 1;
+    std::size_t max_length = 1;
+    std::size_t max_length_col = 1;
     for (std::size_t j = 0; j < cols; j++)
     {
       std::size_t length = 1;
@@ -67,10 +67,10 @@ namespace berezin
         if (matrix[i * cols + j] == matrix[(i - 1) * cols + j])
         {
           length++;
-          if (length > maxLength)
+          if (length > max_length)
           {
-            maxLength = length;
-            maxLengthCol = j + 1;
+            max_length = length;
+            max_length_col = j + 1;
           }
         }
         else
@@ -79,7 +79,7 @@ namespace berezin
         }
       }
     }
-    return maxLengthCol;
+    return max_length_col;
   }
 
   std::size_t cntRowNsm(const int* matrix, std::size_t rows, std::size_t cols)
@@ -87,12 +87,12 @@ namespace berezin
     std::size_t result = 0;
     for (std::size_t i = 0; i < rows; i++)
     {
-      bool hasRepeats = false;
-      for (std::size_t j = 1; (j < cols) && !hasRepeats; j++)
+      bool has_repeats = false;
+      for (std::size_t j = 1; (j < cols) && !has_repeats; j++)
       {
-        hasRepeats = (matrix[i * cols + j] == matrix[i * cols + j - 1]);
+        has_repeats = (matrix[i * cols + j] == matrix[i * cols + j - 1]);
       }
-      if (!hasRepeats)
+      if (!has_repeats)
       {
         result++;
       }
@@ -163,11 +163,11 @@ namespace berezin
       std::cerr << "Error: invalid matrix size\n";
       return invalidMatrixError;
     }
-    const std::size_t matrixSize = rows * cols;
+    const std::size_t matrix_size = rows * cols;
 
     if (mode[0] == fixedMemory)
     {
-      if (matrixSize > maxFixedSize)
+      if (matrix_size > maxFixedSize)
       {
         std::cerr << "Error: matrix size is bigger than " << maxFixedSize << "\n";
         return invalidMatrixError;
@@ -179,7 +179,7 @@ namespace berezin
     int* matrix = nullptr;
     try
     {
-      matrix = new int[matrixSize];
+      matrix = new int[matrix_size];
     }
     catch (const std::bad_alloc&)
     {
