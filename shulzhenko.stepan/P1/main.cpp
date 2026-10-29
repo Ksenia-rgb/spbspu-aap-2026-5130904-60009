@@ -56,6 +56,7 @@ namespace shulzhenko
 
     std::cout << inq_seq << std::endl;
     std::cout << grt_lss << std::endl;
+
     return success;
   }
 
