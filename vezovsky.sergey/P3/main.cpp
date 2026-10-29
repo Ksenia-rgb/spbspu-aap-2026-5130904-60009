@@ -6,176 +6,175 @@
 
 namespace vezovsky
 {
-  const std::size_t fixedLimit = 10000;
+  const std::size_t fixedlimit = 10000;
 
-  bool readDimensions(std::istream& in, std::size_t& rows, std::size_t& cols)
+  bool readdimensions(std::istream& stream, std::size_t& outrows, std::size_t& outcols)
   {
-    long long int r = 0;
-    long long int c = 0;
-    if (!(in >> r >> c) || r < 0 || c < 0)
+    long long int rawrows = 0;
+    long long int rawcols = 0;
+    if (!(stream >> rawrows >> rawcols) || rawrows < 0 || rawcols < 0)
     {
       return false;
     }
-    rows = static_cast< std::size_t >(r);
-    cols = static_cast< std::size_t >(c);
-    return cols == 0 || rows <= std::numeric_limits< std::size_t >::max() / cols;
+    outrows = static_cast< std::size_t >(rawrows);
+    outcols = static_cast< std::size_t >(rawcols);
+    return outcols == 0 || outrows <= std::numeric_limits< std::size_t >::max() / outcols;
   }
 
-  std::size_t findColumnWithLongestRun(const int* data, std::size_t rows, std::size_t cols)
+  std::size_t findcolumnwithlongestrun(const int* matrix, std::size_t height, std::size_t width)
   {
-    if (rows == 0 || cols == 0)
+    if (height == 0 || width == 0)
     {
       return 0;
     }
-    std::size_t bestLength = 1;
-    std::size_t bestColumn = 1;
-    for (std::size_t col = 0; col < cols; col++)
+    std::size_t bestlength = 1;
+    std::size_t bestcolumn = 1;
+    for (std::size_t column = 0; column < width; column++)
     {
-      std::size_t length = 1;
-      for (std::size_t row = 1; row < rows; row++)
+      std::size_t runlength = 1;
+      for (std::size_t line = 1; line < height; line++)
       {
-        length = (data[row * cols + col] == data[(row - 1) * cols + col]) ? length + 1 : 1;
-        if (length > bestLength)
+        runlength = (matrix[line * width + column] == matrix[(line - 1) * width + column]) ? runlength + 1 : 1;
+        if (runlength > bestlength)
         {
-          bestLength = length;
-          bestColumn = col + 1;
+          bestlength = runlength;
+          bestcolumn = column + 1;
         }
       }
     }
-    return bestColumn;
+    return bestcolumn;
   }
 
-  void addSpiral(int* data, std::size_t rows, std::size_t cols)
+  void addspiral(int* cells, std::size_t rowcount, std::size_t colcount)
   {
-    std::size_t top = 0, left = 0, bottom = rows, right = cols;
-    int number = 1;
-    while (top < bottom && left < right)
+    std::size_t upper = 0, leftedge = 0, lower = rowcount, rightedge = colcount;
+    int addend = 1;
+    while (upper < lower && leftedge < rightedge)
     {
-      for (std::size_t col = left; col < right; col++)
+      for (std::size_t bottomcol = leftedge; bottomcol < rightedge; bottomcol++)
       {
-        data[(bottom - 1) * cols + col] += number++;
+        cells[(lower - 1) * colcount + bottomcol] += addend++;
       }
-      bottom--;
-      if (top < bottom)
+      lower--;
+      if (upper < lower)
       {
-        for (std::size_t row = bottom; row > top; row--)
+        for (std::size_t rightrow = lower; rightrow > upper; rightrow--)
         {
-          data[(row - 1) * cols + (right - 1)] += number++;
+          cells[(rightrow - 1) * colcount + (rightedge - 1)] += addend++;
         }
-        right--;
+        rightedge--;
       }
-      if (top < bottom && left < right)
+      if (upper < lower && leftedge < rightedge)
       {
-        for (std::size_t col = right; col > left; col--)
+        for (std::size_t topcol = rightedge; topcol > leftedge; topcol--)
         {
-          data[top * cols + (col - 1)] += number++;
+          cells[upper * colcount + (topcol - 1)] += addend++;
         }
-        top++;
+        upper++;
       }
-      if (top < bottom && left < right)
+      if (upper < lower && leftedge < rightedge)
       {
-        for (std::size_t row = top; row < bottom; row++)
+        for (std::size_t leftrow = upper; leftrow < lower; leftrow++)
         {
-          data[row * cols + left] += number++;
+          cells[leftrow * colcount + leftedge] += addend++;
         }
-        left++;
+        leftedge++;
       }
     }
   }
 
-  int processMatrix(std::istream& in, std::ostream& out, int* data, std::size_t rows, std::size_t cols)
+  int processmatrix(std::istream& instream, std::ostream& outstream, int* values, std::size_t rownum, std::size_t colnum)
   {
-    for (std::size_t i = 0; i < rows * cols; i++)
+    for (std::size_t readindex = 0; readindex < rownum * colnum; readindex++)
     {
-      if (!(in >> data[i]))
+      if (!(instream >> values[readindex]))
       {
-        std::cerr << "Error: invalid matrix data\n";
+        std::cerr << "error: invalid matrix data\n";
         return 2;
       }
     }
-    char extra = '\0';
-    if (in >> extra)
+    char leftover = '\0';
+    if (instream >> leftover)
     {
-      std::cerr << "Error: extra data after matrix\n";
+      std::cerr << "error: extra data after matrix\n";
       return 2;
     }
-    out << findColumnWithLongestRun(data, rows, cols) << '\n';
-    addSpiral(data, rows, cols);
-    out << rows << ' ' << cols;
-    for (std::size_t i = 0; i < rows * cols; i++)
+    outstream << findcolumnwithlongestrun(values, rownum, colnum) << '\n';
+    addspiral(values, rownum, colnum);
+    outstream << rownum << ' ' << colnum;
+    for (std::size_t writeindex = 0; writeindex < rownum * colnum; writeindex++)
     {
-      out << ' ' << data[i];
+      outstream << ' ' << values[writeindex];
     }
-    out << '\n';
-    if (!out)
+    outstream << '\n';
+    if (!outstream)
     {
-      std::cerr << "Error: cannot write in output file\n";
+      std::cerr << "error: cannot write in output file\n";
       return 2;
     }
     return 0;
   }
 
-  int runLab(int argc, char** argv)
+  int runlab(int argc, char** argv)
   {
     if (argc != 4)
     {
-      std::cerr << "Error: wrong number of arguments\n";
+      std::cerr << "error: wrong number of arguments\n";
       return 1;
     }
     const char* mode = argv[1];
     if ((mode[0] != '1' && mode[0] != '2') || mode[1] != '\0')
     {
-      std::cerr << "Error: first parameter must be 1 or 2\n";
+      std::cerr << "error: first parameter must be 1 or 2\n";
       return 1;
     }
-    std::ifstream in{argv[2]};
-    if (!in)
+    std::ifstream infile{argv[2]};
+    if (!infile)
     {
-      std::cerr << "Error: cannot open input file\n";
+      std::cerr << "error: cannot open input file\n";
       return 1;
     }
-    std::ofstream out{argv[3]};
-    if (!out)
+    std::ofstream outfile{argv[3]};
+    if (!outfile)
     {
-      std::cerr << "Error: cannot open output file\n";
+      std::cerr << "error: cannot open output file\n";
       return 1;
     }
-    std::size_t rows = 0;
-    std::size_t cols = 0;
-    if (!readDimensions(in, rows, cols))
+    std::size_t matrixrows = 0;
+    std::size_t matrixcols = 0;
+    if (!readdimensions(infile, matrixrows, matrixcols))
     {
-      std::cerr << "Error: invalid matrix size\n";
+      std::cerr << "error: invalid matrix size\n";
       return 2;
     }
-    const std::size_t total = rows * cols;
+    const std::size_t total = matrixrows * matrixcols;
     if (mode[0] == '1')
     {
-      if (total > fixedLimit)
+      if (total > fixedlimit)
       {
-        std::cerr << "Error: matrix size is bigger than " << fixedLimit << "\n";
+        std::cerr << "error: matrix size is bigger than " << fixedlimit << "\n";
         return 2;
       }
-      int data[fixedLimit] = {};
-      return processMatrix(in, out, data, rows, cols);
+      int stackdata[fixedlimit] = {};
+      return processmatrix(infile, outfile, stackdata, matrixrows, matrixcols);
     }
-    int* data = nullptr;
+    int* heapdata = nullptr;
     try
     {
-      data = new int[total];
+      heapdata = new int[total];
     }
     catch (const std::bad_alloc&)
     {
-      std::cerr << "Error: not enough memory\n";
+      std::cerr << "error: not enough memory\n";
       return 2;
     }
-    int code = processMatrix(in, out, data, rows, cols);
-    delete[] data;
+    int code = processmatrix(infile, outfile, heapdata, matrixrows, matrixcols);
+    delete[] heapdata;
     return code;
   }
 }
 
 int main(int argc, char** argv)
 {
-  return vezovsky::runLab(argc, argv);
+  return vezovsky::runlab(argc, argv);
 }
-
