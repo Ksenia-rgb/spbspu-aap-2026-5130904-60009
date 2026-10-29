@@ -6,108 +6,108 @@
 
 namespace vezovsky
 {
-  const std::size_t fixedlimit = 10000;
+  const std::size_t limit = 10000;
 
-  bool readdimensions(std::istream& stream, std::size_t& outrows, std::size_t& outcols)
+  bool readdimensions(std::istream& in, std::size_t& rows, std::size_t& cols)
   {
-    long long int rawrows = 0;
-    long long int rawcols = 0;
-    if (!(stream >> rawrows >> rawcols) || rawrows < 0 || rawcols < 0)
+    long long int r = 0;
+    long long int c = 0;
+    if (!(in >> r >> c) || r < 0 || c < 0)
     {
       return false;
     }
-    outrows = static_cast< std::size_t >(rawrows);
-    outcols = static_cast< std::size_t >(rawcols);
-    return outcols == 0 || outrows <= std::numeric_limits< std::size_t >::max() / outcols;
+    rows = static_cast< std::size_t >(r);
+    cols = static_cast< std::size_t >(c);
+    return cols == 0 || rows <= std::numeric_limits< std::size_t >::max() / cols;
   }
 
-  std::size_t findcolumnwithlongestrun(const int* matrix, std::size_t height, std::size_t width)
+  std::size_t findcolumnwithlongestrun(const int* m, std::size_t h, std::size_t w)
   {
-    if (height == 0 || width == 0)
+    if (h == 0 || w == 0)
     {
       return 0;
     }
-    std::size_t bestlength = 1;
-    std::size_t bestcolumn = 1;
-    for (std::size_t column = 0; column < width; column++)
+    std::size_t best = 1;
+    std::size_t col = 1;
+    for (std::size_t j = 0; j < w; j++)
     {
-      std::size_t runlength = 1;
-      for (std::size_t line = 1; line < height; line++)
+      std::size_t run = 1;
+      for (std::size_t i = 1; i < h; i++)
       {
-        runlength = (matrix[line * width + column] == matrix[(line - 1) * width + column]) ? runlength + 1 : 1;
-        if (runlength > bestlength)
+        run = (m[i * w + j] == m[(i - 1) * w + j]) ? run + 1 : 1;
+        if (run > best)
         {
-          bestlength = runlength;
-          bestcolumn = column + 1;
+          best = run;
+          col = j + 1;
         }
       }
     }
-    return bestcolumn;
+    return col;
   }
 
-  void addspiral(int* cells, std::size_t rowcount, std::size_t colcount)
+  void addspiral(int* m, std::size_t rows, std::size_t cols)
   {
-    std::size_t upper = 0, leftedge = 0, lower = rowcount, rightedge = colcount;
-    int addend = 1;
-    while (upper < lower && leftedge < rightedge)
+    std::size_t top = 0, left = 0, bottom = rows, right = cols;
+    int add = 1;
+    while (top < bottom && left < right)
     {
-      for (std::size_t bottomcol = leftedge; bottomcol < rightedge; bottomcol++)
+      for (std::size_t j = left; j < right; j++)
       {
-        cells[(lower - 1) * colcount + bottomcol] += addend++;
+        m[(bottom - 1) * cols + j] += add++;
       }
-      lower--;
-      if (upper < lower)
+      bottom--;
+      if (top < bottom)
       {
-        for (std::size_t rightrow = lower; rightrow > upper; rightrow--)
+        for (std::size_t i = bottom; i > top; i--)
         {
-          cells[(rightrow - 1) * colcount + (rightedge - 1)] += addend++;
+          m[(i - 1) * cols + (right - 1)] += add++;
         }
-        rightedge--;
+        right--;
       }
-      if (upper < lower && leftedge < rightedge)
+      if (top < bottom && left < right)
       {
-        for (std::size_t topcol = rightedge; topcol > leftedge; topcol--)
+        for (std::size_t j = right; j > left; j--)
         {
-          cells[upper * colcount + (topcol - 1)] += addend++;
+          m[top * cols + (j - 1)] += add++;
         }
-        upper++;
+        top++;
       }
-      if (upper < lower && leftedge < rightedge)
+      if (top < bottom && left < right)
       {
-        for (std::size_t leftrow = upper; leftrow < lower; leftrow++)
+        for (std::size_t i = top; i < bottom; i++)
         {
-          cells[leftrow * colcount + leftedge] += addend++;
+          m[i * cols + left] += add++;
         }
-        leftedge++;
+        left++;
       }
     }
   }
 
-  int processmatrix(std::istream& instream, std::ostream& outstream, int* values, std::size_t rownum, std::size_t colnum)
+  int processmatrix(std::istream& in, std::ostream& out, int* data, std::size_t rows, std::size_t cols)
   {
-    for (std::size_t readindex = 0; readindex < rownum * colnum; readindex++)
+    for (std::size_t i = 0; i < rows * cols; i++)
     {
-      if (!(instream >> values[readindex]))
+      if (!(in >> data[i]))
       {
         std::cerr << "error: invalid matrix data\n";
         return 2;
       }
     }
-    char leftover = '\0';
-    if (instream >> leftover)
+    char extra = '\0';
+    if (in >> extra)
     {
       std::cerr << "error: extra data after matrix\n";
       return 2;
     }
-    outstream << findcolumnwithlongestrun(values, rownum, colnum) << '\n';
-    addspiral(values, rownum, colnum);
-    outstream << rownum << ' ' << colnum;
-    for (std::size_t writeindex = 0; writeindex < rownum * colnum; writeindex++)
+    out << findcolumnwithlongestrun(data, rows, cols) << '\n';
+    addspiral(data, rows, cols);
+    out << rows << ' ' << cols;
+    for (std::size_t i = 0; i < rows * cols; i++)
     {
-      outstream << ' ' << values[writeindex];
+      out << ' ' << data[i];
     }
-    outstream << '\n';
-    if (!outstream)
+    out << '\n';
+    if (!out)
     {
       std::cerr << "error: cannot write in output file\n";
       return 2;
@@ -122,54 +122,54 @@ namespace vezovsky
       std::cerr << "error: wrong number of arguments\n";
       return 1;
     }
-    const char* mode = argv[1];
+    const char* const mode = argv[1];
     if ((mode[0] != '1' && mode[0] != '2') || mode[1] != '\0')
     {
       std::cerr << "error: first parameter must be 1 or 2\n";
       return 1;
     }
-    std::ifstream infile{argv[2]};
-    if (!infile)
+    std::ifstream in{argv[2]};
+    if (!in)
     {
       std::cerr << "error: cannot open input file\n";
       return 1;
     }
-    std::ofstream outfile{argv[3]};
-    if (!outfile)
+    std::ofstream out{argv[3]};
+    if (!out)
     {
       std::cerr << "error: cannot open output file\n";
       return 1;
     }
-    std::size_t matrixrows = 0;
-    std::size_t matrixcols = 0;
-    if (!readdimensions(infile, matrixrows, matrixcols))
+    std::size_t rows = 0;
+    std::size_t cols = 0;
+    if (!readdimensions(in, rows, cols))
     {
       std::cerr << "error: invalid matrix size\n";
       return 2;
     }
-    const std::size_t total = matrixrows * matrixcols;
+    const std::size_t total = rows * cols;
     if (mode[0] == '1')
     {
-      if (total > fixedlimit)
+      if (total > limit)
       {
-        std::cerr << "error: matrix size is bigger than " << fixedlimit << "\n";
+        std::cerr << "error: matrix size is bigger than " << limit << "\n";
         return 2;
       }
-      int stackdata[fixedlimit] = {};
-      return processmatrix(infile, outfile, stackdata, matrixrows, matrixcols);
+      int data[limit] = {};
+      return processmatrix(in, out, data, rows, cols);
     }
-    int* heapdata = nullptr;
+    int* data = nullptr;
     try
     {
-      heapdata = new int[total];
+      data = new int[total];
     }
     catch (const std::bad_alloc&)
     {
       std::cerr << "error: not enough memory\n";
       return 2;
     }
-    int code = processmatrix(infile, outfile, heapdata, matrixrows, matrixcols);
-    delete[] heapdata;
+    const int code = processmatrix(in, out, data, rows, cols);
+    delete[] data;
     return code;
   }
 }
