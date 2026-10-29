@@ -6,7 +6,7 @@ namespace shulzhenko
   constexpr int success = 0;
   constexpr int invalid_input = 1;
   constexpr int impossible_calculate = 2;
-  constexpr int max_count = std::numeric_limits<int>::max();
+  constexpr int max_count = std::numeric_limits< int >::max();
 
   int laba()
   {
