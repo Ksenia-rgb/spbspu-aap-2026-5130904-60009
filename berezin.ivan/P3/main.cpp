@@ -82,6 +82,17 @@ namespace berezin
     return max_length_col;
   }
 
+  bool checkedSub(int& cell, int step)
+  {
+    const long long int value = static_cast< long long int >(cell) - static_cast< long long int >(step);
+    if ((value < std::numeric_limits< int >::min()) || (value > std::numeric_limits< int >::max()))
+    {
+      return false;
+    }
+    cell = static_cast< int >(value);
+    return true;
+  }
+
   int lftTopClk(int* matrix, std::size_t rows, std::size_t cols)
   {
     if ((rows == 0) || (cols == 0))
@@ -95,59 +106,44 @@ namespace berezin
     std::size_t right = cols - 1;
     int step = 1;
 
-    constexpr long long int min_int = static_cast< long long int >(std::numeric_limits< int >::min());
-    constexpr long long int max_int = static_cast< long long int >(std::numeric_limits< int >::max());
-
     while ((top <= bottom) && (left <= right))
     {
       for (std::size_t j = left; j <= right; j++, step++)
       {
-        const long long int value =
-          static_cast< long long int >(matrix[top * cols + j]) - static_cast< long long int >(step);
-        if ((value < min_int) || (value > max_int))
+        if (!checkedSub(matrix[top * cols + j], step))
         {
           std::cerr << "Error: overflow during left-top clockwise transformation\n";
           return invalidMatrixError;
         }
-        matrix[top * cols + j] = static_cast< int >(value);
       }
       for (std::size_t i = top + 1; i <= bottom; i++, step++)
       {
-        const long long int value =
-          static_cast< long long int >(matrix[i * cols + right]) - static_cast< long long int >(step);
-        if ((value < min_int) || (value > max_int))
+        if (!checkedSub(matrix[i * cols + right], step))
         {
           std::cerr << "Error: overflow during left-top clockwise transformation\n";
           return invalidMatrixError;
         }
-        matrix[i * cols + right] = static_cast< int >(value);
       }
       if (top < bottom)
       {
         for (std::size_t j = right; j > left; j--, step++)
         {
-          const long long int value =
-            static_cast< long long int >(matrix[bottom * cols + j - 1]) - static_cast< long long int >(step);
-          if ((value < min_int) || (value > max_int))
+          if (!checkedSub(matrix[bottom * cols + j - 1], step))
           {
             std::cerr << "Error: overflow during left-top clockwise transformation\n";
             return invalidMatrixError;
           }
-          matrix[bottom * cols + j - 1] = static_cast< int >(value);
         }
       }
       if (left < right)
       {
         for (std::size_t i = bottom; i > top + 1; i--, step++)
         {
-          const long long int value =
-            static_cast< long long int >(matrix[(i - 1) * cols + left]) - static_cast< long long int >(step);
-          if ((value < min_int) || (value > max_int))
+          if (!checkedSub(matrix[(i - 1) * cols + left], step))
           {
             std::cerr << "Error: overflow during left-top clockwise transformation\n";
             return invalidMatrixError;
           }
-          matrix[(i - 1) * cols + left] = static_cast< int >(value);
         }
       }
       if ((bottom == 0) || (right == 0))
