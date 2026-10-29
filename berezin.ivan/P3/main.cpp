@@ -82,11 +82,11 @@ namespace berezin
     return max_length_col;
   }
 
-  void lftTopClk(int* matrix, std::size_t rows, std::size_t cols)
+  int lftTopClk(int* matrix, std::size_t rows, std::size_t cols)
   {
     if ((rows == 0) || (cols == 0))
     {
-      return;
+      return success;
     }
 
     std::size_t top = 0;
@@ -95,28 +95,59 @@ namespace berezin
     std::size_t right = cols - 1;
     int step = 1;
 
+    constexpr long long int min_int = static_cast< long long int >(std::numeric_limits< int >::min());
+    constexpr long long int max_int = static_cast< long long int >(std::numeric_limits< int >::max());
+
     while ((top <= bottom) && (left <= right))
     {
       for (std::size_t j = left; j <= right; j++, step++)
       {
-        matrix[top * cols + j] -= step;
+        const long long int value =
+          static_cast< long long int >(matrix[top * cols + j]) - static_cast< long long int >(step);
+        if ((value < min_int) || (value > max_int))
+        {
+          std::cerr << "Error: overflow during left-top clockwise transformation\n";
+          return invalidMatrixError;
+        }
+        matrix[top * cols + j] = static_cast< int >(value);
       }
       for (std::size_t i = top + 1; i <= bottom; i++, step++)
       {
-        matrix[i * cols + right] -= step;
+        const long long int value =
+          static_cast< long long int >(matrix[i * cols + right]) - static_cast< long long int >(step);
+        if ((value < min_int) || (value > max_int))
+        {
+          std::cerr << "Error: overflow during left-top clockwise transformation\n";
+          return invalidMatrixError;
+        }
+        matrix[i * cols + right] = static_cast< int >(value);
       }
       if (top < bottom)
       {
         for (std::size_t j = right; j > left; j--, step++)
         {
-          matrix[bottom * cols + j - 1] -= step;
+          const long long int value =
+            static_cast< long long int >(matrix[bottom * cols + j - 1]) - static_cast< long long int >(step);
+          if ((value < min_int) || (value > max_int))
+          {
+            std::cerr << "Error: overflow during left-top clockwise transformation\n";
+            return invalidMatrixError;
+          }
+          matrix[bottom * cols + j - 1] = static_cast< int >(value);
         }
       }
       if (left < right)
       {
         for (std::size_t i = bottom; i > top + 1; i--, step++)
         {
-          matrix[(i - 1) * cols + left] -= step;
+          const long long int value =
+            static_cast< long long int >(matrix[(i - 1) * cols + left]) - static_cast< long long int >(step);
+          if ((value < min_int) || (value > max_int))
+          {
+            std::cerr << "Error: overflow during left-top clockwise transformation\n";
+            return invalidMatrixError;
+          }
+          matrix[(i - 1) * cols + left] = static_cast< int >(value);
         }
       }
       if ((bottom == 0) || (right == 0))
@@ -128,6 +159,7 @@ namespace berezin
       bottom--;
       right--;
     }
+    return success;
   }
 
   void printMatrix(std::ostream& output, const int* matrix, std::size_t rows, std::size_t cols)
@@ -154,10 +186,17 @@ namespace berezin
       return invalidMatrixError;
     }
 
-    output << numColLsr(matrix, rows, cols) << '\n';
-    lftTopClk(matrix, rows, cols);
+    const std::size_t col = numColLsr(matrix, rows, cols);
+
+    const int transform_result = lftTopClk(matrix, rows, cols);
+    if (transform_result != success)
+    {
+      return transform_result;
+    }
+
     printMatrix(output, matrix, rows, cols);
     output << '\n';
+    output << col << '\n';
     if (!output)
     {
       std::cerr << "Error: cannot write in output file\n";
@@ -206,6 +245,12 @@ namespace berezin
     }
     const std::size_t matrix_size = rows * cols;
 
+    if (matrix_size >= static_cast< std::size_t >(std::numeric_limits< int >::max()))
+    {
+      std::cerr << "Error: matrix is too large to process\n";
+      return invalidMatrixError;
+    }
+
     if (mode[0] == fixedMemory)
     {
       if (matrix_size > maxFixedSize)
@@ -213,7 +258,7 @@ namespace berezin
         std::cerr << "Error: matrix size is bigger than " << maxFixedSize << "\n";
         return invalidMatrixError;
       }
-      int matrix[maxFixedSize] = {};
+      int matrix[maxFixedSize];
       return numColLsrAndLftTopClk(input, output, matrix, rows, cols);
     }
 
