@@ -4,62 +4,28 @@
 
 namespace stamboliyski
 {
-  int *enterNums()
+  void enterNums(int p[1000])
   {
     int num = 0;
     std::size_t count = 0;
-    int *p = nullptr;
 
     if (!(std::cin >> num))
     {
-      delete[] p;
       throw std::invalid_argument("Invalid argument");
     }
 
-    if (num == 0)
+    while (num != 0 && count<1000)
     {
-      p = new int[1];
-    }
-
-    while (num != 0)
-    {
-      if (p == nullptr)
-      {
-        p = new int[1];
-        p[0] = num;
-      }
-
-      count += 1;
-      int *const temp = new int[count];
-
-      for (std::size_t i = 0; i < count; i++)
-      {
-        temp[i] = p[i];
-      }
-
-      temp[count - 1] = num;
-      delete[] p;
-      p = new int[count + 1];
-
-      for (std::size_t i = 0; i < count; i++)
-      {
-        p[i] = temp[i];
-      }
-
-      delete[] temp;
-
+      p[count]=num;
+      count++;
       if (!(std::cin >> num))
       {
-        delete[] p;
         throw std::invalid_argument("ERROR");
       }
     }
-
-    p[count] = 0;
-    return p;
   }
 
-  int zadOne(const int *p)
+  int zOne(const int p[1000])
   {
     if (p[0] == 0)
     {
@@ -90,11 +56,10 @@ namespace stamboliyski
         highnum = countnums;
       }
     }
-
     return highnum;
   }
 
-  int zadTwo(const int *p)
+  int zTwo(const int p[1000])
   {
     if (p[0] == 0)
     {
@@ -133,20 +98,18 @@ namespace stamboliyski
 
 int main()
 {
-  int *nums = nullptr;
+  int nums[1000]={0};
 
   try
   {
-    nums = stamboliyski::enterNums();
+    stamboliyski::enterNums(nums);
   }
   catch (const std::invalid_argument &)
   {
     std::cerr << "Program terminated with error code: 1\n";
     return 1;
   }
-
-  std::cout << stamboliyski::zadOne(nums) << "\n";
-  std::cout << stamboliyski::zadTwo(nums) << "\n";
-  delete[] nums;
+  std::cout << stamboliyski::zOne(nums) << "\n";
+  std::cout << stamboliyski::zTwo(nums) << "\n";
   return 0;
 }
