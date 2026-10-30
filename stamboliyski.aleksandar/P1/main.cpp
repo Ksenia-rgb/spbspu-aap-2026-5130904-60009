@@ -2,9 +2,11 @@
 #include <stdexcept>
 #include <cstddef>
 
+#define size 1000
+
 namespace stamboliyski
 {
-  void enterNums(int p[1000])
+  void enterNums(int p[size])
   {
     int num = 0;
     std::size_t count = 0;
@@ -14,9 +16,9 @@ namespace stamboliyski
       throw std::invalid_argument("Invalid argument");
     }
 
-    while (num != 0 && count<1000)
+    while (num != 0 && count < size)
     {
-      p[count]=num;
+      p[count] = num;
       count++;
       if (!(std::cin >> num))
       {
@@ -25,7 +27,7 @@ namespace stamboliyski
     }
   }
 
-  int zOne(const int p[1000])
+  int zOne(const int p[size])
   {
     if (p[0] == 0)
     {
@@ -59,7 +61,7 @@ namespace stamboliyski
     return highnum;
   }
 
-  int zTwo(const int p[1000])
+  int zTwo(const int p[size])
   {
     if (p[0] == 0)
     {
@@ -98,7 +100,7 @@ namespace stamboliyski
 
 int main()
 {
-  int nums[1000]={0};
+  int nums[size] = {0};
 
   try
   {
