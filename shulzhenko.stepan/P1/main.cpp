@@ -13,11 +13,15 @@ namespace shulzhenko
     int last = 0, cur = 0, next = 0;
     int inq_seq = 0;
     int grt_lss = 0;
+    bool inq_overflow = false;
+    bool grt_overflow = false;
+    bool zero_reached = false;
 
     while (std::cin >> next)
     {
       if (next == 0)
       {
+        zero_reached = true;
         break;
       }
 
@@ -27,8 +31,7 @@ namespace shulzhenko
         {
           if (grt_lss == max_count)
           {
-            std::cerr << "Error: overflow\n";
-            return impossible_calculate;
+            grt_overflow = true;
           }
           grt_lss += 1;
         }
@@ -41,8 +44,7 @@ namespace shulzhenko
       {
         if (inq_seq == max_count)
         {
-          std::cerr << "Error: overflow\n";
-          return impossible_calculate;
+          inq_overflow = true;
         }
         inq_seq += 1;
       }
@@ -54,8 +56,31 @@ namespace shulzhenko
       return invalid_input;
     }
 
-    std::cout << inq_seq << std::endl;
-    std::cout << grt_lss << std::endl;
+    if (!zero_reached)
+    {
+      std::cerr << "Error: invalid input\n";
+      return invalid_input;
+    }
+
+    if (inq_overflow)
+    {
+      std::cerr << "Error: overflow\n";
+      return impossible_calculate;
+    }
+    else
+    {
+      std::cout << inq_seq << '\n';
+    }
+
+    if (grt_overflow)
+    {
+      std::cerr << "Error: overflow\n";
+      return impossible_calculate;
+    }
+    else
+    {
+      std::cout << grt_lss << '\n';
+    }
 
     return success;
   }
