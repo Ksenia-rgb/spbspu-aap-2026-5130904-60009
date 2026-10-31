@@ -4,8 +4,7 @@
 #include <limits>
 #include <fstream>
 
-namespace sokolova
-{
+namespace sokolova {
   constexpr std::size_t max_fix = 10000;
 
   size_t countLocalMax(const int * m, std::size_t rows, std::size_t cols)
@@ -16,20 +15,20 @@ namespace sokolova
     std::size_t count = 0;
     for (std::size_t i = 1; i + 1 < rows; ++i) {
       for (std::size_t j = 1; j + 1 < cols; ++j) {
-        int v = m[i * cols + j];
-        bool isMax = true;
-        for (std::size_t di = 0; di < 3 && isMax; ++di) {
+        const int v = m[i * cols + j];
+        bool is_max = true;
+        for (std::size_t di = 0; di < 3 && is_max; ++di) {
           for (std::size_t dj = 0; dj < 3; ++dj) {
             if (di == 1 && dj == 1) {
               continue;
             }
             if (m[(i + di - 1) * cols + (j + dj - 1)] >= v) {
-              isMax = false;
+              is_max = false;
               break;
             }
           }
         }
-        if (isMax) {
+        if (is_max) {
           ++count;
         }
       }
@@ -109,17 +108,16 @@ namespace sokolova
 
   bool runDynamic(std::istream & in, std::ostream & out, std::size_t rows, std::size_t cols)
   {
-    std::size_t n = rows * cols;
-    int * data = static_cast< int * >(std::malloc((n == 0 ? 1 : n) * sizeof(int)));
+    const std::size_t n = rows * cols;
+    int * const data = static_cast< int * >(std::malloc((n == 0 ? 1 : n) * sizeof(int)));
     if (data == nullptr) {
       return false;
     }
-    bool ok = process(in, out, data, rows, cols);
+    const bool ok = process(in, out, data, rows, cols);
     std::free(data);
     return ok;
   }
 
-  // Возвращает 1 или 2, если строка ровно "1" или "2", иначе 0
   int parseMode(const char * s)
   {
     if (s[0] != '\0' && s[1] == '\0') {
@@ -141,7 +139,7 @@ int main(int argc, char ** argv)
     return 1;
   }
 
-  int mode = sokolova::parseMode(argv[1]);
+  const int mode = sokolova::parseMode(argv[1]);
   if (mode == 0) {
     std::cerr << "Error: first parameter must be 1 or 2\n";
     return 1;
@@ -164,10 +162,9 @@ int main(int argc, char ** argv)
     std::cerr << "Error: invalid matrix size\n";
     return 2;
   }
-  std::size_t rows = static_cast< std::size_t >(r);
-  std::size_t cols = static_cast< std::size_t >(c);
+  const std::size_t rows = static_cast< std::size_t >(r);
+  const std::size_t cols = static_cast< std::size_t >(c);
 
-  // защита от переполнения rows * cols
   if (cols != 0 && rows > std::numeric_limits< std::size_t >::max() / cols) {
     std::cerr << "Error: matrix is too large\n";
     return 2;
