@@ -1,11 +1,12 @@
 #include <iostream>
 #include <cstddef>
+#include <cstdlib>
 #include <limits>
 #include <fstream>
 
 namespace sokolova
 {
-  size_t max_fix = 10000;
+  constexpr std::size_t max_fix = 10000;
 
   size_t countLocalMax(const int * m, std::size_t rows, std::size_t cols)
   {
@@ -102,7 +103,7 @@ namespace sokolova
 
   bool runFixed(std::istream & in, std::ostream & out, std::size_t rows, std::size_t cols)
   {
-    int data[] = {};
+    int data[max_fix] = {};
     return process(in, out, data, rows, cols);
   }
 
