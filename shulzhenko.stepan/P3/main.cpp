@@ -7,6 +7,15 @@ namespace shulzhenko
 {
   constexpr std::size_t max_size = 10000;
 
+  constexpr int success = 0;
+  constexpr int invalid_argument = 1;
+  constexpr int invalid_matrix = 2;
+  constexpr int exp_argc = 4;
+
+  constexpr char nullChar = '\0';
+  constexpr char fixedMemory = '1';
+  constexpr char dynamicMemory = '2';
+
   bool readSize(std::istream &input, std::size_t &rows, std::size_t &cols)
   {
     long long int rows_val = 0;
@@ -18,6 +27,10 @@ namespace shulzhenko
     }
 
     if (rows_val < 0 || cols_val < 0)
+    {
+      return false;
+    }
+    if ((cols != 0) && (rows > (std::numeric_limits< std::size_t >::max() / cols)))
     {
       return false;
     }
@@ -117,7 +130,7 @@ namespace shulzhenko
     long long int result1 = 0;
     long long int result2 = 0;
 
-    if (mode == '1')
+    if (mode == fixedMemory)
     {
       if (total > max_size)
       {
@@ -134,7 +147,7 @@ namespace shulzhenko
       result1 = notSameElements(matrix, rows, cols);
       result2 = minSum(matrix, rows, cols);
     }
-    else
+    else if(mode == dynamicMemory)
     {
       int *matrix = nullptr;
 
@@ -168,38 +181,43 @@ namespace shulzhenko
 
 int main(int argc, char **argv)
 {
-  if (argc != 4)
+  if (argc != exp_argc)
   {
-    return 1;
+    std::cerr << "Error: wrong number\n";
+    return invalid_argument;
   }
 
   const char *const mode = argv[1];
   const char *const input_path = argv[2];
   const char *const output_path = argv[3];
 
-  if ((mode[0] != '1' && mode[0] != '2') || mode[1] != '\0')
+  if ((mode[0] != fixedMemory && mode[0] != dynamicMemory) || mode[1] != nullChar)
   {
-    return 1;
+    std::cerr << "Error: ffixedMemory or dynamicMemory\n";
+    return invalid_argument;
   }
 
   std::ifstream input{input_path};
 
   if (!input)
   {
-    return 1;
+    std::cerr << "Error: cannot open input file\n";
+    return invalid_argument;
   }
 
   std::ofstream output{output_path};
 
   if (!output)
   {
-    return 1;
+    std::cerr << "Error: cannot open output file\n";
+    return invalid_argument;
   }
 
   if (!shulzhenko::run(input, output, mode[0]))
   {
-    return 2;
+    std::cerr << "Error: matrix is too large to process\n";
+    return invalid_matrix;
   }
 
-  return 0;
+  return success;
 }
