@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <new>
+#include <limits>
 
 namespace shulzhenko
 {
@@ -147,7 +148,7 @@ namespace shulzhenko
       result1 = notSameElements(matrix, rows, cols);
       result2 = minSum(matrix, rows, cols);
     }
-    else if(mode == dynamicMemory)
+    else if (mode == dynamicMemory)
     {
       int *matrix = nullptr;
 
@@ -177,47 +178,52 @@ namespace shulzhenko
 
     return output.good();
   }
+
+  int laba(int argc, char **argv)
+  {
+    if (argc != exp_argc)
+    {
+      std::cerr << "Error: wrong number\n";
+      return invalid_argument;
+    }
+
+    const char *const mode = argv[1];
+    const char *const input_path = argv[2];
+    const char *const output_path = argv[3];
+
+    if ((mode[0] != fixedMemory && mode[0] != dynamicMemory) || mode[1] != nullChar)
+    {
+      std::cerr << "Error: ffixedMemory or dynamicMemory\n";
+      return invalid_argument;
+    }
+
+    std::ifstream input{input_path};
+
+    if (!input)
+    {
+      std::cerr << "Error: cannot open input file\n";
+      return invalid_argument;
+    }
+
+    std::ofstream output{output_path};
+
+    if (!output)
+    {
+      std::cerr << "Error: cannot open output file\n";
+      return invalid_argument;
+    }
+
+    if (!shulzhenko::run(input, output, mode[0]))
+    {
+      std::cerr << "Error: matrix is too large to process\n";
+      return invalid_matrix;
+    }
+
+    return success;
+  }
 }
 
 int main(int argc, char **argv)
 {
-  if (argc != exp_argc)
-  {
-    std::cerr << "Error: wrong number\n";
-    return invalid_argument;
-  }
-
-  const char *const mode = argv[1];
-  const char *const input_path = argv[2];
-  const char *const output_path = argv[3];
-
-  if ((mode[0] != fixedMemory && mode[0] != dynamicMemory) || mode[1] != nullChar)
-  {
-    std::cerr << "Error: ffixedMemory or dynamicMemory\n";
-    return invalid_argument;
-  }
-
-  std::ifstream input{input_path};
-
-  if (!input)
-  {
-    std::cerr << "Error: cannot open input file\n";
-    return invalid_argument;
-  }
-
-  std::ofstream output{output_path};
-
-  if (!output)
-  {
-    std::cerr << "Error: cannot open output file\n";
-    return invalid_argument;
-  }
-
-  if (!shulzhenko::run(input, output, mode[0]))
-  {
-    std::cerr << "Error: matrix is too large to process\n";
-    return invalid_matrix;
-  }
-
-  return success;
+  return shulzhenko::laba(argc, argv);
 }
