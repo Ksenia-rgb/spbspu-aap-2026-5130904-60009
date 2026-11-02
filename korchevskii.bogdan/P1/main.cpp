@@ -1,6 +1,10 @@
-
 #include <iostream>
 #include <limits>
+
+const int unexpeted_input_error = 1;
+const int too_few_elements_error = 2;
+const int counter_overflow_error = 3;
+const int everithing_is_alright = 0;
 
 int main()
 {
@@ -12,6 +16,10 @@ int main()
   unsigned long long count_min = 0;
 
   while (std::cin >> input && input != 0) {
+    if (count == std::numeric_limits< unsigned long long >::max()) {
+      std::cerr << "Counter oveflow\n";
+      return counter_overflow_error;
+    }
     ++count;
 
     if (count == 1) {
@@ -38,14 +46,14 @@ int main()
 
   if (std::cin.fail()) {
     std::cerr << "Unexpected input\n";
-    return 1;
+    return unexpeted_input_error;
   }
 
-  int status = 0;
+  auto status = everithing_is_alright;
 
   if (count < 2) {
     std::cerr << "[SUB-MAX] The sequence must contain at least 2 elements\n";
-    status = 2;
+    status = too_few_elements_error;
   } else {
     std::cout << max2 << '\n';
   }
