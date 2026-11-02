@@ -74,7 +74,7 @@ namespace safarbekov
     {
       for (std::size_t j = 1; j + 1 < cols; ++j)
       {
-        int current = data[i * cols + j];
+        const int current = data[i * cols + j];
         bool is_min = true;
         for (std::size_t di = 0; di < 3 && is_min; ++di)
         {
@@ -166,7 +166,7 @@ namespace safarbekov
       std::cerr << "invalid matrix size\n";
       return exit_input_error;
     }
-    std::size_t count = rows * cols;
+    const std::size_t count = rows * cols;
     int* data = nullptr;
     try
     {
