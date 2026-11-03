@@ -1,11 +1,12 @@
 #include <iostream>
-
-constexpr int success = 0;
-constexpr int invalid_input_error = 1;
-constexpr int inposible_calculations_error = 2;
+#include <limits>
 
 namespace berezin
 {
+
+  constexpr int success = 0;
+  constexpr int invalid_input_error = 1;
+  constexpr int inposible_calculations_error = 2;
 
   int grtLssDivRem()
   {
@@ -37,6 +38,8 @@ namespace berezin
 
     unsigned int grt_lss_count = 0;
     unsigned int div_rem_count = (second % first) == 0;
+    bool grt_lss_overflow = false;
+    bool div_rem_overflow = false;
 
     int prev = first;
     int curr = second;
@@ -48,8 +51,30 @@ namespace berezin
       {
         break;
       }
-      grt_lss_count += (curr < prev) && (curr > next);
-      div_rem_count += (next % curr) == 0;
+      if (!grt_lss_overflow)
+      {
+        const unsigned int inc = (curr < prev) && (curr > next);
+        if (std::numeric_limits< unsigned int >::max() - inc < grt_lss_count)
+        {
+          grt_lss_overflow = true;
+        }
+        else
+        {
+          grt_lss_count += inc;
+        }
+      }
+      if (!div_rem_overflow)
+      {
+        const unsigned int inc = (next % curr) == 0;
+        if (std::numeric_limits< unsigned int >::max() - inc < div_rem_count)
+        {
+          div_rem_overflow = true;
+        }
+        else
+        {
+          div_rem_count += inc;
+        }
+      }
       prev = curr;
       curr = next;
     }
@@ -67,8 +92,28 @@ namespace berezin
       return invalid_input_error;
     }
 
-    std::cout << grt_lss_count << '\n';
-    std::cout << div_rem_count << '\n';
+    if (grt_lss_overflow)
+    {
+      std::cerr << "Error: overflow in GRT-LSS count\n";
+    }
+    else
+    {
+      std::cout << grt_lss_count << '\n';
+    }
+
+    if (div_rem_overflow)
+    {
+      std::cerr << "Error: overflow in DIV-REM count\n";
+    }
+    else
+    {
+      std::cout << div_rem_count << '\n';
+    }
+
+    if (grt_lss_overflow || div_rem_overflow)
+    {
+      return inposible_calculations_error;
+    }
 
     return success;
   }
