@@ -3,124 +3,161 @@
 
 namespace berezin
 {
-
   constexpr int success = 0;
   constexpr int invalid_input_error = 1;
-  constexpr int inposible_calculations_error = 2;
+  constexpr int impossible_calculation_error = 2;
 
-  int grtLssDivRem()
+  class GrtLssCounter
   {
-    int first = 0;
-    if (!(std::cin >> first))
-    {
-      std::cerr << "Error: invalid input\n";
-      return invalid_input_error;
-    }
-    if (first == 0)
-    {
-      std::cout << "0\n";
-      std::cerr << "Error: not enough input values for DIV-REM\n";
-      return inposible_calculations_error;
-    }
+  public:
+    void add(int value) noexcept;
+    bool print(std::ostream& output, std::ostream& error) const;
 
-    int second = 0;
-    if (!(std::cin >> second))
-    {
-      std::cerr << "Error: invalid input\n";
-      return invalid_input_error;
-    }
-    if (second == 0)
-    {
-      std::cout << "0\n";
-      std::cerr << "Error: not enough input values for DIV-REM\n";
-      return inposible_calculations_error;
-    }
+  private:
+    int previous_ = 0;
+    int current_ = 0;
+    unsigned int count_ = 0;
+    bool has_previous_ = false;
+    bool has_current_ = false;
+    bool overflow_ = false;
+  };
 
-    unsigned int grt_lss_count = 0;
-    unsigned int div_rem_count = (second % first) == 0;
-    bool grt_lss_overflow = false;
-    bool div_rem_overflow = false;
+  class DivRemCounter
+  {
+  public:
+    void add(int value) noexcept;
+    bool print(std::ostream& output, std::ostream& error) const;
 
-    int prev = first;
-    int curr = second;
-    int next = 0;
+  private:
+    int previous_ = 0;
+    unsigned int count_ = 0;
+    bool has_previous_ = false;
+    bool has_pair_ = false;
+    bool overflow_ = false;
+  };
 
-    while (std::cin >> next)
+  int process(std::istream& input, std::ostream& output, std::ostream& error);
+}
+
+void berezin::GrtLssCounter::add(int value) noexcept
+{
+  if (!has_previous_)
+  {
+    previous_ = value;
+    has_previous_ = true;
+    return;
+  }
+  if (!has_current_)
+  {
+    current_ = value;
+    has_current_ = true;
+    return;
+  }
+  if ((previous_ > current_) && (current_ > value) && !overflow_)
+  {
+    if (count_ == std::numeric_limits< unsigned int >::max())
     {
-      if (next == 0)
-      {
-        break;
-      }
-      if (!grt_lss_overflow)
-      {
-        const unsigned int inc = (curr < prev) && (curr > next);
-        if (std::numeric_limits< unsigned int >::max() - inc < grt_lss_count)
-        {
-          grt_lss_overflow = true;
-        }
-        else
-        {
-          grt_lss_count += inc;
-        }
-      }
-      if (!div_rem_overflow)
-      {
-        const unsigned int inc = (next % curr) == 0;
-        if (std::numeric_limits< unsigned int >::max() - inc < div_rem_count)
-        {
-          div_rem_overflow = true;
-        }
-        else
-        {
-          div_rem_count += inc;
-        }
-      }
-      prev = curr;
-      curr = next;
-    }
-
-    if (!std::cin)
-    {
-      std::cerr << "Error: invalid input\n";
-      return invalid_input_error;
-    }
-
-    int extra = 0;
-    if (std::cin >> extra)
-    {
-      std::cerr << "Error: extra data after \"0\"\n";
-      return invalid_input_error;
-    }
-
-    if (grt_lss_overflow)
-    {
-      std::cerr << "Error: overflow in GRT-LSS count\n";
+      overflow_ = true;
     }
     else
     {
-      std::cout << grt_lss_count << '\n';
+      count_++;
     }
+  }
+  previous_ = current_;
+  current_ = value;
+}
 
-    if (div_rem_overflow)
+bool berezin::GrtLssCounter::print(std::ostream& output, std::ostream& error) const
+{
+  if (overflow_)
+  {
+    error << "Error: overflow in GRT-LSS count\n";
+    return false;
+  }
+  output << count_ << '\n';
+  return true;
+}
+
+void berezin::DivRemCounter::add(int value) noexcept
+{
+  if (!has_previous_)
+  {
+    previous_ = value;
+    has_previous_ = true;
+    return;
+  }
+  has_pair_ = true;
+  if (!overflow_ && ((previous_ == -1) || ((value % previous_) == 0)))
+  {
+    if (count_ == std::numeric_limits< unsigned int >::max())
     {
-      std::cerr << "Error: overflow in DIV-REM count\n";
+      overflow_ = true;
     }
     else
     {
-      std::cout << div_rem_count << '\n';
+      count_++;
     }
+  }
+  previous_ = value;
+}
 
-    if (grt_lss_overflow || div_rem_overflow)
+bool berezin::DivRemCounter::print(std::ostream& output, std::ostream& error) const
+{
+  if (!has_pair_)
+  {
+    error << "Error: not enough input values for DIV-REM\n";
+    return false;
+  }
+  if (overflow_)
+  {
+    error << "Error: overflow in DIV-REM count\n";
+    return false;
+  }
+  output << count_ << '\n';
+  return true;
+}
+
+int berezin::process(std::istream& input, std::ostream& output, std::ostream& error)
+{
+  GrtLssCounter grt_lss;
+  DivRemCounter div_rem;
+  int value = 0;
+  bool terminated = false;
+  while (input >> value)
+  {
+    if (value == 0)
     {
-      return inposible_calculations_error;
+      terminated = true;
+      break;
     }
-
-    return success;
+    grt_lss.add(value);
+    div_rem.add(value);
   }
 
+  if (!terminated)
+  {
+    error << "Error: invalid input\n";
+    return invalid_input_error;
+  }
+
+  char extra = '\0';
+  if ((input >> extra) || !input.eof() || input.bad())
+  {
+    error << "Error: extra data after \"0\"\n";
+    return invalid_input_error;
+  }
+
+  const bool grt_lss_success = grt_lss.print(output, error);
+  const bool div_rem_success = div_rem.print(output, error);
+  if (!grt_lss_success || !div_rem_success)
+  {
+    return impossible_calculation_error;
+  }
+  return success;
 }
 
 int main()
 {
-  return berezin::grtLssDivRem();
+  return berezin::process(std::cin, std::cout, std::cerr);
 }
