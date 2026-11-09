@@ -9,10 +9,12 @@ namespace shulzhenko
   constexpr int cannot_in_dynamic_memory = 1;
   constexpr int has_repeats = 1;
   constexpr char null_char = '\0';
+  constexpr std::size_t initial_cap = 16;
+  constexpr std::size_t alphabet = 26;
 
   char *readDynamicString(std::istream &in, bool &is_memory_error)
   {
-    std::size_t cap = 16;
+    std::size_t cap = initial_cap;
     std::size_t size = 0;
     char *buf = nullptr;
 
@@ -106,7 +108,7 @@ namespace shulzhenko
     {
       const char ch = str[i];
 
-      if (std::isdigit(static_cast< unsigned char >(ch)))
+      if (std::isdigit(static_cast<unsigned char>(ch)))
       {
         const int digit = ch - '0';
 
@@ -139,12 +141,12 @@ namespace shulzhenko
       return cannot_in_dynamic_memory;
     }
 
-    char second_str[27];
-    for (std::size_t i = 0; i < 26; ++i)
+    char second_str[alphabet + 1];
+    for (std::size_t i = 0; i < alphabet; ++i)
     {
-      second_str[i] = static_cast< char >('a' + i);
+      second_str[i] = static_cast<char>('a' + i);
     }
-    second_str[26] = null_char;
+    second_str[alphabet] = null_char;
 
     std::size_t len_first = 0;
     while (first_str[len_first] != null_char)
