@@ -44,20 +44,23 @@ namespace safarbekov
     constexpr int result_false = 0;
     constexpr std::size_t initial_capacity = 16;
     constexpr std::size_t growth_factor = 2;
-    constexpr std::size_t alphabet_size = static_cast< std::size_t >(std::numeric_limits< unsigned char >::max()) + 1;
+    constexpr std::size_t alphabet_size =
+      static_cast< std::size_t >(std::numeric_limits< unsigned char >::max()) + 1;
 
     void growBuffer(CharBuffer& buffer, const std::size_t length)
-
     {
       if (buffer.getCapacity() > std::numeric_limits< std::size_t >::max() / growth_factor)
       {
         throw std::runtime_error("line is too long");
       }
+
       CharBuffer bigger(buffer.getCapacity() * growth_factor);
+
       for (std::size_t i = 0; i < length; ++i)
       {
         bigger.getData()[i] = buffer.getData()[i];
       }
+
       buffer.swap(bigger);
     }
   }
@@ -105,8 +108,10 @@ void safarbekov::CharBuffer::swap(CharBuffer& other) noexcept
 {
   char* const old_data = data_;
   const std::size_t old_capacity = capacity_;
+
   data_ = other.data_;
   capacity_ = other.capacity_;
+
   other.data_ = old_data;
   other.capacity_ = old_capacity;
 }
@@ -116,15 +121,26 @@ safarbekov::CharBuffer safarbekov::readLine(std::istream& in)
   CharBuffer buffer(initial_capacity);
   std::size_t length = 0;
   char symbol = null_terminator;
+  bool has_input = false;
+
   while (in.get(symbol) && symbol != line_end)
   {
+    has_input = true;
+
     if (length + 1 >= buffer.getCapacity())
     {
       growBuffer(buffer, length);
     }
+
     buffer.getData()[length] = symbol;
     ++length;
   }
+
+  if (!has_input && in.eof())
+  {
+    throw std::runtime_error("input is empty");
+  }
+
   buffer.getData()[length] = null_terminator;
   return buffer;
 }
@@ -132,16 +148,19 @@ safarbekov::CharBuffer safarbekov::readLine(std::istream& in)
 std::size_t safarbekov::getLength(const char* const source)
 {
   std::size_t length = 0;
+
   while (source[length] != null_terminator)
   {
     ++length;
   }
+
   return length;
 }
 
 std::size_t safarbekov::removeLatinLetters(const char* const source, char* const destination)
 {
   std::size_t length = 0;
+
   for (std::size_t i = 0; source[i] != null_terminator; ++i)
   {
     if (std::isalpha(static_cast< unsigned char >(source[i])) == 0)
@@ -150,6 +169,7 @@ std::size_t safarbekov::removeLatinLetters(const char* const source, char* const
       ++length;
     }
   }
+
   destination[length] = null_terminator;
   return length;
 }
@@ -157,15 +177,19 @@ std::size_t safarbekov::removeLatinLetters(const char* const source, char* const
 int safarbekov::hasRepeatedSymbols(const char* const source)
 {
   int seen[alphabet_size] = {};
+
   for (std::size_t i = 0; source[i] != null_terminator; ++i)
   {
     const unsigned char symbol = static_cast< unsigned char >(source[i]);
+
     if (seen[symbol] != result_false)
     {
       return result_true;
     }
+
     seen[symbol] = result_true;
   }
+
   return result_false;
 }
 
@@ -175,7 +199,9 @@ int main()
   {
     const safarbekov::CharBuffer input = safarbekov::readLine(std::cin);
     safarbekov::CharBuffer output(safarbekov::getLength(input.getData()) + 1);
+
     safarbekov::removeLatinLetters(input.getData(), output.getData());
+
     std::cout << output.getData() << std::endl;
     std::cout << safarbekov::hasRepeatedSymbols(input.getData()) << std::endl;
   }
@@ -184,5 +210,6 @@ int main()
     std::cerr << "error: " << error.what() << std::endl;
     return safarbekov::exit_memory_error;
   }
+
   return safarbekov::exit_success;
 }
