@@ -42,7 +42,7 @@ namespace safarbekov
   {
     template< class Counter >
     int printCharacteristic(const Counter& counter, std::ostream& out, std::ostream& err)
-   
+
     {
       try
       {

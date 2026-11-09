@@ -47,7 +47,7 @@ namespace safarbekov
     constexpr std::size_t alphabet_size = static_cast< std::size_t >(std::numeric_limits< unsigned char >::max()) + 1;
 
     void growBuffer(CharBuffer& buffer, const std::size_t length)
-   
+
     {
       if (buffer.getCapacity() > std::numeric_limits< std::size_t >::max() / growth_factor)
       {
