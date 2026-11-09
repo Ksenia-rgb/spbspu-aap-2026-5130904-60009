@@ -108,7 +108,7 @@ namespace shulzhenko
     {
       const char ch = str[i];
 
-      if (std::isdigit(static_cast<unsigned char>(ch)))
+      if (std::isdigit(static_cast< unsigned char >(ch)))
       {
         const int digit = ch - '0';
 
@@ -144,7 +144,7 @@ namespace shulzhenko
     char second_str[alphabet + 1];
     for (std::size_t i = 0; i < alphabet; ++i)
     {
-      second_str[i] = static_cast<char>('a' + i);
+      second_str[i] = static_cast< char >('a' + i);
     }
     second_str[alphabet] = null_char;
 
