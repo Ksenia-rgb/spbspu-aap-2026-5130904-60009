@@ -1,40 +1,50 @@
-#include <iostream>
-#include <cstddef>
 #include <cctype>
-#include <cstdlib>
+#include <cstddef>
+#include <exception>
+#include <iostream>
 
 namespace shulzhenko
 {
   constexpr int success = 0;
   constexpr int cannot_in_dynamic_memory = 1;
+  constexpr int has_repeats = 1;
   constexpr char null_char = '\0';
 
-  char *readDynamicString(std::istream &in, bool &isMemoryError)
+  char *readDynamicString(std::istream &in, bool &is_memory_error)
   {
-    size_t cap = 16;
-    size_t size = 0;
-    char *buf = new char[cap];
+    std::size_t cap = 16;
+    std::size_t size = 0;
+    char *buf = nullptr;
 
-    if (buf == nullptr)
+    try
     {
-      isMemoryError = true;
+      buf = new char[cap];
+    }
+    catch (const std::exception &)
+    {
+      is_memory_error = true;
       return nullptr;
     }
 
-    char ch;
+    char ch = 0;
     while (in.get(ch) && ch != '\n')
     {
       if (size + 1 >= cap)
       {
-        cap *= 2;
-        char *new_buf = new char[cap];
+        char *new_buf = nullptr;
 
-        if (new_buf == nullptr)
+        try
+        {
+          new_buf = new char[cap * 2];
+        }
+        catch (const std::exception &)
         {
           delete[] buf;
-          isMemoryError = true;
+          is_memory_error = true;
           return nullptr;
         }
+
+        cap *= 2;
 
         for (std::size_t i = 0; i < size; ++i)
         {
@@ -92,17 +102,17 @@ namespace shulzhenko
 
     int digits[10] = {0};
 
-    for (size_t i = 0; str[i] != null_char; ++i)
+    for (std::size_t i = 0; str[i] != null_char; ++i)
     {
-      char ch = str[i];
+      const char ch = str[i];
 
-      if (std::isdigit(ch))
+      if (std::isdigit(static_cast< unsigned char >(ch)))
       {
-        int digit = str[i] - '0';
+        const int digit = ch - '0';
 
         if (digits[digit] != 0)
         {
-          return cannot_in_dynamic_memory;
+          return has_repeats;
         }
         digits[digit] = 1;
       }
@@ -114,7 +124,7 @@ namespace shulzhenko
   {
     bool mem_err = false;
 
-    char *first_str = readDynamicString(std::cin, mem_err);
+    char *const first_str = readDynamicString(std::cin, mem_err);
 
     if (mem_err)
     {
@@ -122,22 +132,33 @@ namespace shulzhenko
       return cannot_in_dynamic_memory;
     }
 
-    char second_str[27];
-    for (int i = 0; i < 26; ++i)
+    if (!std::cin && first_str[0] == null_char)
     {
-      second_str[i] = 'a' + i;
+      std::cerr << "Error: Empty input.\n";
+      delete[] first_str;
+      return cannot_in_dynamic_memory;
+    }
+
+    char second_str[27];
+    for (std::size_t i = 0; i < 26; ++i)
+    {
+      second_str[i] = static_cast< char >('a' + i);
     }
     second_str[26] = null_char;
 
-    size_t len_first = 0;
+    std::size_t len_first = 0;
     while (first_str[len_first] != null_char)
     {
       ++len_first;
     }
 
-    char *result_str = new char[len_first + 1];
+    char *result_str = nullptr;
 
-    if (result_str == nullptr)
+    try
+    {
+      result_str = new char[len_first + 1];
+    }
+    catch (const std::exception &)
     {
       std::cerr << "Error: Cannot allocate memory for result string.\n";
       delete[] first_str;
