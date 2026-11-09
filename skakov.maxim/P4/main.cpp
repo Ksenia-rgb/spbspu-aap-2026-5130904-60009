@@ -8,6 +8,7 @@ namespace skakov {
 
   constexpr int success = 0;
   constexpr int memory_error = 1;
+  constexpr int input_error = 2;
 
   constexpr std::size_t start_capacity = 16;
 
@@ -120,6 +121,10 @@ namespace skakov {
 
   int run(std::istream& input, std::ostream& output, std::ostream& error)
   {
+    if (input.peek() == std::istream::traits_type::eof()) {
+      error << "Error: invalid input\n";
+      return input_error;
+    }
     char* const first = readLine(input);
     if (first == nullptr) {
       error << "Error: not enough memory\n";
