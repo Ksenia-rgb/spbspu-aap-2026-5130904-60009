@@ -3,8 +3,7 @@
 #include <iostream>
 #include <new>
 
-namespace chugunov
-{
+namespace chugunov {
   const size_t FIXED_CAP = 10000;
 
   size_t countNoEqual(const int *data, size_t rows, size_t cols)
@@ -66,7 +65,7 @@ namespace chugunov
       return false;
     }
 
-    const size_t maxCount = static_cast<size_t>(-1) / sizeof(int);
+    const size_t maxCount = static_cast< size_t >(-1) / sizeof(int);
     if (rows != 0 && cols > maxCount / rows) {
       return false;
     }
