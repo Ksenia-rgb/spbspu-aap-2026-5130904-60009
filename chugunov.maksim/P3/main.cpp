@@ -1,4 +1,4 @@
-#in#include <cstddef>
+#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <new>
@@ -7,7 +7,7 @@ namespace chugunov
 {
   const size_t FIXED_CAP = 10000;
 
-  size_t countNoEqual(const int *data, std::size_t rows, std::size_t cols)
+  size_t countNoEqual(const int *data, size_t rows, size_t cols)
   {
     size_t result = 0;
     for (size_t j = 0; j < cols; ++j) {
