@@ -1,4 +1,4 @@
-#include <cstddef>
+#in#include <cstddef>
 #include <fstream>
 #include <iostream>
 #include <new>
@@ -7,26 +7,25 @@ namespace chugunov
 {
   const size_t FIXED_CAP = 10000;
 
-  size_t countNoEqual(const int * data, std::size_t rows, std::size_t cols)
+  size_t countNoEqual(const int *data, std::size_t rows, std::size_t cols)
   {
     size_t result = 0;
     for (size_t j = 0; j < cols; ++j) {
-      bool hasEqual = false;
+      bool has_equal = false;
       for (size_t i = 1; i < rows; ++i) {
         if (data[i * cols + j] == data[(i - 1) * cols + j]) {
-          hasEqual = true;
+          has_equal = true;
           break;
         }
       }
-      if (!hasEqual) {
+      if (!has_equal) {
         ++result;
       }
     }
     return result;
   }
 
-// 19 варик
-  bool lowTriang(const int * data, size_t rows, size_t cols)
+  bool lowTriang(const int *data, size_t rows, size_t cols)
   {
     if (rows != cols || rows == 0) {
       return false;
@@ -41,7 +40,7 @@ namespace chugunov
     return true;
   }
 
-  bool readMatrix(std::istream & input, int * data, size_t count)
+  bool readMatrix(std::istream &input, int *data, size_t count)
   {
     for (size_t i = 0; i < count; ++i) {
       if (!(input >> data[i])) {
@@ -51,7 +50,7 @@ namespace chugunov
     return true;
   }
 
-  bool writeRes(std::ostream & output, const int * data, size_t rows, size_t cols)
+  bool writeRes(std::ostream &output, const int *data, size_t rows, size_t cols)
   {
     size_t const count9 = countNoEqual(data, rows, cols);
     bool const answer19 = lowTriang(data, rows, cols);
@@ -59,7 +58,7 @@ namespace chugunov
     return output.good();
   }
 
-  bool run(std::istream & input, std::ostream & output, bool dynamic)
+  bool run(std::istream &input, std::ostream &output, bool dynamic)
   {
     size_t rows = 0;
     size_t cols = 0;
@@ -67,7 +66,7 @@ namespace chugunov
       return false;
     }
 
-    const size_t maxCount = static_cast< size_t >(-1) / sizeof(int);
+    const size_t maxCount = static_cast<size_t>(-1) / sizeof(int);
     if (rows != 0 && cols > maxCount / rows) {
       return false;
     }
@@ -84,7 +83,7 @@ namespace chugunov
       return writeRes(output, fixed, rows, cols);
     }
 
-    int * data = new (std::nothrow) int[count];
+    int *const data = new (std::nothrow) int[count];
     if (data == nullptr) {
       return false;
     }
@@ -94,26 +93,26 @@ namespace chugunov
   }
 }
 
-int main(int argc, char * const* argv)
+int main(int argc, char *const *argv)
 {
   if (argc != 4) {
     std::cerr << "Usage: " << argv[0] << " <1|2> <input> <output>\n";
     return 1;
   }
 
-  const char * mode = argv[1];
+  const char *const mode = argv[1];
   if ((mode[0] != '1' && mode[0] != '2') || mode[1] != '\0') {
     std::cerr << "mode only 1/2\n";
     return 1;
   }
   bool const dynamic = (mode[0] == '2');
 
-  std::ifstream input { argv[2] };
+  std::ifstream input{argv[2]};
   if (!input) {
     std::cerr << "cant open input file\n";
     return 1;
   }
-  std::ofstream output { argv[3] };
+  std::ofstream output{argv[3]};
   if (!output) {
     std::cerr << "cant open output file\n";
     return 1;
