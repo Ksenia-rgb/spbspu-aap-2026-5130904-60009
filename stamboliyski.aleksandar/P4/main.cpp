@@ -107,9 +107,11 @@ int main()
   catch(const std::bad_alloc& c)
   {
     std::cerr<<"Memory problems ig?\n";
+    return 1;
   }
   stamboliyski::task_uni_two(str_one, size_one, str_two, size_two);
   stamboliyski::task_dgt_snd(str_one, size_one, str_two, size_two);
   free(str_one);
   free(str_two);
+  return 0;
 }
