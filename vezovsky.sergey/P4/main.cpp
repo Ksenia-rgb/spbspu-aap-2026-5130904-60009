@@ -2,190 +2,147 @@
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
-#include <limits>
 
 namespace vezovsky
 {
-  constexpr std::size_t initial_capacity = 64;
-  constexpr std::size_t alphabet_size = 26;
-  constexpr char end_line = '\n';
-  constexpr char null_char = '\0';
-  constexpr char second_string[] = "abc";
+  const std::size_t start_size = 32;
+  const std::size_t letters = 26;
+  const char second[] = "abc";
 
-  enum class ErrorCode : int
-  {
-    success = 0,
-    memory_error = 1,
-    input_error = 2,
-    output_error = 3
-  };
-
-
-  ErrorCode readLine(std::istream& input, char*& line);
-  std::size_t getLength(const char* str) noexcept;
-  char* excludeSecond(char* result, const char* first, const char* second) noexcept;
-  char* shortageSymbols(char* result, const char* str) noexcept;
+  char* readLine(std::istream& in);
+  std::size_t strLen(const char* s) noexcept;
+  char* excludeChars(char* res, const char* a, const char* b) noexcept;
+  char* missingLetters(char* res, const char* s) noexcept;
   int runLab();
 }
 
-vezovsky::ErrorCode vezovsky::readLine(std::istream& input, char*& line)
+char* vezovsky::readLine(std::istream& in)
 {
-  std::size_t capacity = initial_capacity;
-  std::size_t length = 0;
-  line = static_cast< char* >(std::malloc(capacity));
-  if (line == nullptr)
+  std::size_t size = start_size;
+  std::size_t len = 0;
+  char* str = static_cast< char* >(std::malloc(size));
+  if (str == nullptr)
   {
-    return ErrorCode::memory_error;
+    return nullptr;
   }
 
-  char symbol = null_char;
-  while (input.get(symbol))
+  char c = '\0';
+  while (in.get(c) && c != '\n')
   {
-    if (symbol == end_line)
+    if (len + 1 == size)
     {
-      break;
-    }
-    if (symbol == null_char)
-    {
-      return ErrorCode::input_error;
-    }
-    if (length == capacity - 1)
-    {
-      if (capacity > std::numeric_limits< std::size_t >::max() / 2)
+      const std::size_t newSize = size * 2;
+      char* const bigger = static_cast< char* >(std::malloc(newSize));
+      if (bigger == nullptr)
       {
-        return ErrorCode::memory_error;
+        std::free(str);
+        return nullptr;
       }
-      const std::size_t new_capacity = capacity * 2;
-      char* const expanded = static_cast< char* >(std::malloc(new_capacity));
-      if (expanded == nullptr)
+      for (std::size_t i = 0; i < len; i++)
       {
-        return ErrorCode::memory_error;
+        bigger[i] = str[i];
       }
-      for (std::size_t i = 0; i < length; i++)
-      {
-        expanded[i] = line[i];
-      }
-      std::free(line);
-      line = expanded;
-      capacity = new_capacity;
+      std::free(str);
+      str = bigger;
+      size = newSize;
     }
-    line[length] = symbol;
-    length++;
+    str[len] = c;
+    len++;
   }
-
-  if (input.bad() || (!input && !input.eof()) || (input.eof() && (length == 0)))
-  {
-    return ErrorCode::input_error;
-  }
-  line[length] = null_char;
-  return ErrorCode::success;
+  str[len] = '\0';
+  return str;
 }
 
-std::size_t vezovsky::getLength(const char* str) noexcept
+std::size_t vezovsky::strLen(const char* s) noexcept
 {
-  std::size_t length = 0;
-  while (str[length] != null_char)
+  std::size_t n = 0;
+  while (s[n] != '\0')
   {
-    length++;
+    n++;
   }
-  return length;
+  return n;
 }
 
-char* vezovsky::excludeSecond(char* result, const char* first, const char* second) noexcept
+char* vezovsky::excludeChars(char* res, const char* a, const char* b) noexcept
 {
-  std::size_t length = 0;
-  for (std::size_t i = 0; first[i] != null_char; i++)
+  std::size_t k = 0;
+  for (std::size_t i = 0; a[i] != '\0'; i++)
   {
-    bool found = false;
-    for (std::size_t j = 0; second[j] != null_char; j++)
+    int found = 0;
+    for (std::size_t j = 0; b[j] != '\0'; j++)
     {
-      if (first[i] == second[j])
+      if (a[i] == b[j])
       {
-        found = true;
-        break;
+        found = 1;
       }
     }
-    if (!found)
+    if (found == 0)
     {
-      result[length] = first[i];
-      length++;
+      res[k] = a[i];
+      k++;
     }
   }
-  result[length] = null_char;
-  return result;
+  res[k] = '\0';
+  return res;
 }
 
-char* vezovsky::shortageSymbols(char* result, const char* str) noexcept
+char* vezovsky::missingLetters(char* res, const char* s) noexcept
 {
-  unsigned int present = 0;
-  for (std::size_t i = 0; str[i] != null_char; i++)
+  int used[letters] = {};
+  for (std::size_t i = 0; s[i] != '\0'; i++)
   {
-    const unsigned char symbol = static_cast< unsigned char >(str[i]);
-    if (std::isalpha(symbol) != 0)
+    const unsigned char c = static_cast< unsigned char >(s[i]);
+    if (std::isalpha(c) != 0)
     {
-      const unsigned char lower = static_cast< unsigned char >(std::tolower(symbol));
-      if ((lower >= 'a') && (lower <= 'z'))
+      const int low = std::tolower(c);
+      if (low >= 'a' && low <= 'z')
       {
-        present |= 1u << (lower - 'a');
+        used[low - 'a'] = 1;
       }
     }
   }
 
-  std::size_t length = 0;
-  for (std::size_t i = 0; i < alphabet_size; i++)
+  std::size_t k = 0;
+  for (std::size_t i = 0; i < letters; i++)
   {
-    if ((present & (1u << i)) == 0)
+    if (used[i] == 0)
     {
-      result[length] = static_cast< char >('a' + i);
-      length++;
+      res[k] = static_cast< char >('a' + i);
+      k++;
     }
   }
-  result[length] = null_char;
-  return result;
+  res[k] = '\0';
+  return res;
 }
 
 int vezovsky::runLab()
 {
-  char* line = nullptr;
-  const ErrorCode status = readLine(std::cin, line);
-  if (status != ErrorCode::success)
+  char* const line = readLine(std::cin);
+  if (line == nullptr)
   {
-    if (status == ErrorCode::memory_error)
-    {
-      std::cerr << "Error: cannot allocate input buffer\n";
-    }
-    else
-    {
-      std::cerr << "Error: invalid input\n";
-    }
-    std::free(line);
-    return static_cast< int >(status);
+    std::cerr << "Error: not enough memory\n";
+    return 1;
   }
 
-  char* excluded = static_cast< char* >(std::malloc(getLength(line) + 1));
-  char* shortage = static_cast< char* >(std::malloc(alphabet_size + 1));
-  if ((excluded == nullptr) || (shortage == nullptr))
+  char* const first = static_cast< char* >(std::malloc(strLen(line) + 1));
+  char* const last = static_cast< char* >(std::malloc(letters + 1));
+  if (first == nullptr || last == nullptr)
   {
-    std::cerr << "Error: cannot allocate result buffer\n";
-    std::free(excluded);
-    std::free(shortage);
+    std::cerr << "Error: not enough memory\n";
+    std::free(first);
+    std::free(last);
     std::free(line);
-    return static_cast< int >(ErrorCode::memory_error);
+    return 1;
   }
 
-  excludeSecond(excluded, line, second_string);
-  shortageSymbols(shortage, line);
-  std::cout << excluded << '\n' << shortage << '\n';
-  std::cout.flush();
-  std::free(excluded);
-  std::free(shortage);
+  excludeChars(first, line, second);
+  missingLetters(last, line);
+  std::cout << first << '\n' << last << '\n';
+
+  std::free(first);
+  std::free(last);
   std::free(line);
-  if (!std::cout)
-  {
-    std::cerr << "Error: cannot write output\n";
-    return static_cast< int >(ErrorCode::output_error);
-  }
-  return static_cast< int >(ErrorCode::success);
+  return 0;
 }
 
 int main()
