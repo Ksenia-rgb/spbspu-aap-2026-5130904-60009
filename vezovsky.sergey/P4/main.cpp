@@ -20,6 +20,7 @@ namespace vezovsky
     output_error = 3
   };
 
+
   ErrorCode readLine(std::istream& input, char*& line);
   std::size_t getLength(const char* str) noexcept;
   char* excludeSecond(char* result, const char* first, const char* second) noexcept;
