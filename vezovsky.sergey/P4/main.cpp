@@ -9,20 +9,22 @@ namespace vezovsky
   const std::size_t letters = 26;
   const char second[] = "abc";
 
-  char* readLine(std::istream& in);
+  char* readLine(std::istream& in, int& error);
   std::size_t strLen(const char* s) noexcept;
   char* excludeChars(char* res, const char* a, const char* b) noexcept;
   char* missingLetters(char* res, const char* s) noexcept;
   int runLab();
 }
 
-char* vezovsky::readLine(std::istream& in)
+char* vezovsky::readLine(std::istream& in, int& error)
 {
   std::size_t size = start_size;
   std::size_t len = 0;
+  error = 0;
   char* str = static_cast< char* >(std::malloc(size));
   if (str == nullptr)
   {
+    error = 1;
     return nullptr;
   }
 
@@ -36,6 +38,7 @@ char* vezovsky::readLine(std::istream& in)
       if (bigger == nullptr)
       {
         std::free(str);
+        error = 1;
         return nullptr;
       }
       for (std::size_t i = 0; i < len; i++)
@@ -48,6 +51,13 @@ char* vezovsky::readLine(std::istream& in)
     }
     str[len] = c;
     len++;
+  }
+
+  if (len == 0 && in.eof())
+  {
+    std::free(str);
+    error = 2;
+    return nullptr;
   }
   str[len] = '\0';
   return str;
@@ -117,10 +127,18 @@ char* vezovsky::missingLetters(char* res, const char* s) noexcept
 
 int vezovsky::runLab()
 {
-  char* const line = readLine(std::cin);
+  int error = 0;
+  char* const line = readLine(std::cin, error);
   if (line == nullptr)
   {
-    std::cerr << "Error: not enough memory\n";
+    if (error == 1)
+    {
+      std::cerr << "Error: not enough memory\n";
+    }
+    else
+    {
+      std::cerr << "Error: empty input\n";
+    }
     return 1;
   }
 
