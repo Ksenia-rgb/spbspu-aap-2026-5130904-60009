@@ -1,113 +1,131 @@
+#include <cstddef>
 #include <iostream>
-#include <limits>
+#include <istream>
+#include <ostream>
+#include <stdexcept>
 
 namespace safarbekov
 {
-  const int exit_ok = 0;
-  const int exit_invalid_input = 1;
-  const int exit_cannot_calculate = 2;
+  constexpr int exit_success = 0;
+  constexpr int exit_invalid_sequence = 1;
+  constexpr int exit_incalculable = 2;
 
-  using counter_t = unsigned long long;
-  const counter_t counter_max = std::numeric_limits< counter_t >::max();
-
-  bool increment(counter_t & value)
+  class AfterMaxCounter
   {
-    if (value == counter_max)
-    {
-      return false;
-    }
-    ++value;
-    return true;
-  }
+  public:
+    void operator()(int next);
+    std::size_t operator()() const;
 
-  int run()
+  private:
+    int max_ = 0;
+    std::size_t count_after_ = 0;
+    bool has_max_ = false;
+  };
+
+  class DescentMiddleCounter
   {
-    counter_t grt_lss = 0;
-    bool grt_lss_overflow = false;
+  public:
+    void operator()(int next);
+    std::size_t operator()() const;
 
-    counter_t aft_max = 0;
-    bool aft_max_overflow = false;
-    bool has_elements = false;
-    int max_value = 0;
+  private:
+    int previous_ = 0;
+    int current_ = 0;
+    std::size_t count_ = 0;
+    bool has_previous_ = false;
+    bool has_current_ = false;
+  };
 
-    int prev = 0;
-    int prev_prev = 0;
-    bool has_prev = false;
-    bool has_prev_prev = false;
+  int processSequence(std::istream& in, std::ostream& out, std::ostream& err);
 
-    bool terminated = false;
-    int current = 0;
+  namespace
+  {
+    template< class Counter >
+    int printCharacteristic(const Counter& counter, std::ostream& out, std::ostream& err)
 
-    while (std::cin >> current)
     {
-      if (current == 0)
+      try
       {
-        terminated = true;
-        break;
+        out << counter() << std::endl;
       }
-
-      if (has_prev_prev && prev_prev > prev && prev > current)
+      catch (const std::logic_error& error)
       {
-        if (!increment(grt_lss))
-        {
-          grt_lss_overflow = true;
-        }
+        err << error.what() << std::endl;
+        return exit_incalculable;
       }
-
-      if (!has_elements || current > max_value)
-      {
-        max_value = current;
-        aft_max = 0;
-        aft_max_overflow = false;
-        has_elements = true;
-      }
-      else
-      {
-        if (!increment(aft_max))
-        {
-          aft_max_overflow = true;
-        }
-      }
-
-      prev_prev = prev;
-      has_prev_prev = has_prev;
-      prev = current;
-      has_prev = true;
+      return exit_success;
     }
-
-    if (!terminated)
-    {
-      std::cerr << "Error: input is not a valid sequence\n";
-      return exit_invalid_input;
-    }
-
-    int result = exit_ok;
-
-    if (grt_lss_overflow)
-    {
-      std::cerr << "Error: cannot calculate GRT-LSS\n";
-      result = exit_cannot_calculate;
-    }
-    else
-    {
-      std::cout << grt_lss << '\n';
-    }
-
-    if (!has_elements || aft_max_overflow)
-    {
-      std::cerr << "Error: cannot calculate AFT-MAX\n";
-      result = exit_cannot_calculate;
-    }
-    else
-    {
-      std::cout << aft_max << '\n';
-    }
-
-    return result;
   }
+}
+
+void safarbekov::AfterMaxCounter::operator()(const int next)
+{
+  if (!has_max_ || next > max_)
+  {
+    max_ = next;
+    count_after_ = 0;
+    has_max_ = true;
+  }
+  else
+  {
+    ++count_after_;
+  }
+}
+
+std::size_t safarbekov::AfterMaxCounter::operator()() const
+{
+  if (!has_max_)
+  {
+    throw std::logic_error("sequence is empty, maximum does not exist");
+  }
+  return count_after_;
+}
+
+void safarbekov::DescentMiddleCounter::operator()(const int next)
+{
+  if (has_previous_ && previous_ > current_ && current_ > next)
+  {
+    ++count_;
+  }
+  if (has_current_)
+  {
+    previous_ = current_;
+    has_previous_ = true;
+  }
+  current_ = next;
+  has_current_ = true;
+}
+
+std::size_t safarbekov::DescentMiddleCounter::operator()() const
+{
+  return count_;
+}
+
+int safarbekov::processSequence(std::istream& in, std::ostream& out, std::ostream& err)
+{
+  AfterMaxCounter after_max;
+  DescentMiddleCounter descent_middle;
+  int number = 0;
+  while (in >> number && number != 0)
+  {
+    after_max(number);
+    descent_middle(number);
+  }
+  if (!in)
+  {
+    err << "input is not a sequence of integers terminated by zero" << std::endl;
+    return exit_invalid_sequence;
+  }
+  const int after_max_code = printCharacteristic(after_max, out, err);
+  const int descent_middle_code = printCharacteristic(descent_middle, out, err);
+  if (after_max_code != exit_success)
+  {
+    return after_max_code;
+  }
+  return descent_middle_code;
 }
 
 int main()
 {
-  return safarbekov::run();
+  return safarbekov::processSequence(std::cin, std::cout, std::cerr);
 }
