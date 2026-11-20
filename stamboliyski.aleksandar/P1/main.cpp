@@ -1,6 +1,6 @@
 #include <iostream>
 #include <stdexcept>
-void task_six(int new_num, int old_num, int &local_lenght, int &max_lenght)
+void taskSix(int new_num, int old_num, int &local_lenght, int &max_lenght)
 {
   if (local_lenght == 0)
   {
@@ -19,7 +19,7 @@ void task_six(int new_num, int old_num, int &local_lenght, int &max_lenght)
     max_lenght = local_lenght;
   }
 }
-void task_sixteen(int new_num, int &smallest_num, int &lenght_count)
+void taskSixteen(int new_num, int &smallest_num, int &lenght_count)
 {
   if (new_num < smallest_num)
   {
@@ -35,10 +35,10 @@ int main()
 {
   int task_six_local_lenght = 0;
   int task_six_longest = 0;
-  int task_sixteen_smallest_element;
+  int task_sixteen_smallest_element = 0;
   int task_sixteen_count = 0;
-  int sequence_number;
-  int old_sequence_number;
+  int sequence_number = 0;
+  int old_sequence_number = 0;
   try
   {
     if (!(std::cin >> sequence_number))
@@ -64,8 +64,8 @@ int main()
       }
       if (sequence_number != 0)
       {
-        task_six(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest);
-        task_sixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count);
+        taskSix(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest);
+        taskSixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count);
       }
     }
   }
