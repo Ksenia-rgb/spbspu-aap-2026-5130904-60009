@@ -1,117 +1,90 @@
-#include <iostream>
-#include <stdexcept>
-#include <cstddef>
+#include<iostream>
+#include<stdexcept>
 
-#define SIZE 1000
-
-namespace stamboliyski
+void task_six(int new_num, int old_num, int& local_lenght, int& max_lenght)
 {
-  void enterNums(int p[SIZE])
+  if(local_lenght == 0)
   {
-    int num = 0;
-    std::size_t count = 0;
-
-    if (!(std::cin >> num))
-    {
-      throw std::invalid_argument("Invalid argument");
-    }
-
-    while (num != 0 && count < SIZE)
-    {
-      p[count] = num;
-      count++;
-      if (!(std::cin >> num))
-      {
-        throw std::invalid_argument("ERROR");
-      }
-    }
+    local_lenght++;
   }
-
-  int zOne(const int p[SIZE])
+  if(new_num >= old_num)
   {
-    if (p[0] == 0)
-    {
-      return 0;
-    }
-
-    int count = 0;
-    int countnums = 0;
-    int highnum = 0;
-    int temp = p[0];
-
-    while (p[count] != 0)
-    {
-      if (p[count] >= temp)
-      {
-        countnums++;
-      }
-      else
-      {
-        countnums = 1;
-      }
-
-      temp = p[count];
-      count++;
-
-      if (countnums > highnum)
-      {
-        highnum = countnums;
-      }
-    }
-    return highnum;
+    local_lenght++;
   }
-
-  int zTwo(const int p[SIZE])
+  else
   {
-    if (p[0] == 0)
-    {
-      return 0;
-    }
-
-    int count = 0;
-    int smallestnum = p[0];
-    int smallestnumcounter = 0;
-
-    while (p[count] != 0)
-    {
-      if (p[count] < smallestnum)
-      {
-        smallestnum = p[count];
-      }
-
-      count++;
-    }
-
-    count = 0;
-
-    while (p[count] != 0)
-    {
-      if (p[count] == smallestnum)
-      {
-        smallestnumcounter++;
-      }
-
-      count++;
-    }
-
-    return smallestnumcounter;
+    local_lenght = 1;
+  }
+  if(local_lenght > max_lenght)
+  {
+    max_lenght = local_lenght;
   }
 }
 
+void task_sixteen(int new_num, int& smallest_num, int& lenght_count)
+{
+  if(new_num < smallest_num)
+  {
+    lenght_count = 1;
+    smallest_num = new_num;
+  }
+  else if(new_num == smallest_num)
+  {
+    lenght_count++;
+  }
+}
+
+
+// 6 , 16
 int main()
 {
-  int nums[SIZE] = {0};
-
+  int task_six_local_lenght = 0;
+  int task_six_longest = 0;
+  int task_sixteen_smallest_element;
+  int task_sixteen_count = 0;
+  int sequence_number;
+  int old_sequence_number;
   try
   {
-    stamboliyski::enterNums(nums);
-  }
-  catch (const std::invalid_argument &)
+    if(!(std::cin>>sequence_number))
+    {
+      throw std::invalid_argument("error");
+    }
+    if(sequence_number == 0)
+    {
+      throw std::logic_error("error");
+    }
+    task_sixteen_count = sequence_number;
+    task_sixteen_smallest_element = sequence_number;
+
+    while(sequence_number != 0)
+    {
+      old_sequence_number = sequence_number;
+      if(!(std::cin>>sequence_number))
+      {
+        throw std::invalid_argument("error");
+      }
+      if(sequence_number + task_six_longest == 0)
+      {
+        task_six_longest = 1;
+      }
+      if(sequence_number != 0)
+      {
+        task_six(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest);
+        task_sixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count);
+      }
+    }
+  }  
+  catch(const std::invalid_argument& e)
   {
-    std::cerr << "Program terminated with error code: 1\n";
+    std::cerr<<"Invalid Input\n";
     return 1;
   }
-  std::cout << stamboliyski::zOne(nums) << "\n";
-  std::cout << stamboliyski::zTwo(nums) << "\n";
+  catch(const std::logic_error& e)
+  {
+    std::cerr<<"Invalid Input / logic error\n";
+    return 2;
+  }
+  std::cout<<"task 6  : "<< task_six_longest<<"\ntask 16 : "<<task_sixteen_count<<"\n";
   return 0;
 }
