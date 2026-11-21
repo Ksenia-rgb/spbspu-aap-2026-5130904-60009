@@ -1,34 +1,46 @@
 #include <iostream>
 #include <stdexcept>
-void taskSix(int new_num, int old_num, int &local_lenght, int &max_lenght)
+#include <limits>
+namespace stamboliyski
 {
-  if (local_lenght == 0)
+  void taskSix(int new_num, int old_num, int &local_lenght, int &max_lenght, const int lim_check)
   {
-    local_lenght++;
+    if (local_lenght == 0)
+    {
+      local_lenght++;
+    }
+    if (new_num >= old_num)
+    {
+      if (local_lenght > std::numeric_limits<int>::max() - lim_check)
+      {
+        throw std::logic_error("overflow");
+      }
+      local_lenght++;
+    }
+    else
+    {
+      local_lenght = 1;
+    }
+    if (local_lenght > max_lenght)
+    {
+      max_lenght = local_lenght;
+    }
   }
-  if (new_num >= old_num)
+  void taskSixteen(int new_num, int &smallest_num, int &lenght_count, const int lim_check)
   {
-    local_lenght++;
-  }
-  else
-  {
-    local_lenght = 1;
-  }
-  if (local_lenght > max_lenght)
-  {
-    max_lenght = local_lenght;
-  }
-}
-void taskSixteen(int new_num, int &smallest_num, int &lenght_count)
-{
-  if (new_num < smallest_num)
-  {
-    lenght_count = 1;
-    smallest_num = new_num;
-  }
-  else if (new_num == smallest_num)
-  {
-    lenght_count++;
+    if (new_num < smallest_num)
+    {
+      lenght_count = 1;
+      smallest_num = new_num;
+    }
+    else if (new_num == smallest_num)
+    {
+      if (lenght_count > std::numeric_limits<int>::max() - lim_check)
+      {
+        throw std::logic_error("overflow");
+      }
+      lenght_count++;
+    }
   }
 }
 int main()
@@ -39,6 +51,9 @@ int main()
   int task_sixteen_count = 0;
   int sequence_number = 0;
   int old_sequence_number = 0;
+  const int invalid_arg_err = 1;
+  const int logic_err = 2;
+  const int num_lim_check = 1;
   try
   {
     if (!(std::cin >> sequence_number))
@@ -64,21 +79,22 @@ int main()
       }
       if (sequence_number != 0)
       {
-        taskSix(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest);
-        taskSixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count);
+        stamboliyski::taskSix(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest, num_lim_check);
+        stamboliyski::taskSixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count, num_lim_check);
       }
     }
   }
   catch (const std::invalid_argument &e)
   {
     std::cerr << "Invalid Input\n";
-    return 1;
+    return invalid_arg_err;
   }
   catch (const std::logic_error &e)
   {
     std::cerr << "Invalid Input / logic error\n";
-    return 2;
+    return logic_err;
   }
-  std::cout << "task 6  : " << task_six_longest << "\ntask 16 : " << task_sixteen_count << "\n";
+  std::cout << task_six_longest << "\n";
+  std::cout << task_sixteen_count << "\n";
   return 0;
 }
