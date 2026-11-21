@@ -53,7 +53,7 @@ int main()
   int old_sequence_number = 0;
   const int invalid_arg_err = 1;
   const int logic_err = 2;
-  const int num_lim_check = 1;
+  const int num_lim = 1;
   try
   {
     if (!(std::cin >> sequence_number))
@@ -79,8 +79,8 @@ int main()
       }
       if (sequence_number != 0)
       {
-        stamboliyski::taskSix(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest, num_lim_check);
-        stamboliyski::taskSixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count, num_lim_check);
+        stamboliyski::taskSix(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest, num_lim);
+        stamboliyski::taskSixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count, num_lim);
       }
     }
   }
