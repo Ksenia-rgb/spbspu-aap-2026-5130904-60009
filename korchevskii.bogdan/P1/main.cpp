@@ -1,10 +1,13 @@
 #include <iostream>
 #include <limits>
 
-const int unexpeted_input_error = 1;
-const int too_few_elements_error = 2;
-const int counter_overflow_error = 3;
-const int everithing_is_alright = 0;
+namespace korchevskii
+{
+constexpr int unexpeted_input_error = 1;
+constexpr int too_few_elements_error = 2;
+constexpr int counter_overflow_error = 3;
+constexpr int everithing_is_alright = 0;
+}
 
 int main()
 {
@@ -16,10 +19,6 @@ int main()
   unsigned long long count_min = 0;
 
   while (std::cin >> input && input != 0) {
-    if (count == std::numeric_limits< unsigned long long >::max()) {
-      std::cerr << "Counter oveflow\n";
-      return counter_overflow_error;
-    }
     ++count;
 
     if (count == 1) {
@@ -37,6 +36,10 @@ int main()
     }
 
     if (input == min) {
+      if (count_min == std::numeric_limits< unsigned long long >::max()) {
+        std::cerr << "Counter overflow\n";
+        return korchevskii::counter_overflow_error;
+      }
       ++count_min;
     } else if (input < min) {
       min = input;
@@ -46,14 +49,14 @@ int main()
 
   if (std::cin.fail()) {
     std::cerr << "Unexpected input\n";
-    return unexpeted_input_error;
+    return korchevskii::unexpeted_input_error;
   }
 
-  auto status = everithing_is_alright;
+  auto status = korchevskii::everithing_is_alright;
 
   if (count < 2) {
     std::cerr << "[SUB-MAX] The sequence must contain at least 2 elements\n";
-    status = too_few_elements_error;
+    status = korchevskii::too_few_elements_error;
   } else {
     std::cout << max2 << '\n';
   }
