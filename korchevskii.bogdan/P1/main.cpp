@@ -1,12 +1,11 @@
 #include <iostream>
 #include <limits>
 
-namespace korchevskii
-{
-constexpr int unexpeted_input_error = 1;
-constexpr int too_few_elements_error = 2;
-constexpr int counter_overflow_error = 3;
-constexpr int everithing_is_alright = 0;
+namespace korchevskii {
+  constexpr int unexpeted_input_error = 1;
+  constexpr int too_few_elements_error = 2;
+  constexpr int counter_overflow_error = 3;
+  constexpr int everithing_is_alright = 0;
 }
 
 int main()
