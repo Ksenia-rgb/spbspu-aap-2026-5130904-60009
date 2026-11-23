@@ -3,9 +3,9 @@
 namespace zakharov {
   struct SeqStats
   {
-    size_t count = 0;       
-    size_t maxIncLen = 0;   
-    size_t locMax = 0;      
+    size_t count = 0;
+    size_t maxIncLen = 0;
+    size_t locMax = 0;
   };
 
   bool readAndProcess(std::istream & in, SeqStats & s)
