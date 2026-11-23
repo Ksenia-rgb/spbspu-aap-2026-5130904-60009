@@ -11,7 +11,7 @@ namespace stamboliyski
     }
     if (new_num >= old_num)
     {
-      if (local_lenght > std::numeric_limits< int >::max() - lim_check)
+      if (local_lenght > std::numeric_limits< size_t >::max() - lim_check)
       {
         throw std::logic_error("overflow");
       }
@@ -35,7 +35,7 @@ namespace stamboliyski
     }
     else if (new_num == smallest_num)
     {
-      if (lenght_count > std::numeric_limits< int >::max() - lim_check)
+      if (lenght_count > std::numeric_limits< size_t >::max() - lim_check)
       {
         throw std::logic_error("overflow");
       }
