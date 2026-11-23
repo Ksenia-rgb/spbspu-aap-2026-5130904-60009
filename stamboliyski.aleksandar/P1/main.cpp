@@ -3,7 +3,7 @@
 #include <limits>
 namespace stamboliyski
 {
-  void taskSix(int new_num, int old_num, int &local_lenght, int &max_lenght, const int lim_check)
+  void taskSix(int new_num, int old_num, size_t &local_lenght, size_t &max_lenght, const int lim_check)
   {
     if (local_lenght == 0)
     {
@@ -26,7 +26,7 @@ namespace stamboliyski
       max_lenght = local_lenght;
     }
   }
-  void taskSixteen(int new_num, int &smallest_num, int &lenght_count, const int lim_check)
+  void taskSixteen(int new_num, int &smallest_num, size_t &lenght_count, const int lim_check)
   {
     if (new_num < smallest_num)
     {
@@ -45,10 +45,10 @@ namespace stamboliyski
 }
 int main()
 {
-  int task_six_local_lenght = 0;
-  int task_six_longest = 0;
+  size_t task_six_local_lenght = 0;
+  size_t task_six_longest = 0;
   int task_sixteen_smallest_element = 0;
-  int task_sixteen_count = 0;
+  size_t task_sixteen_count = 0;
   int sequence_number = 0;
   int old_sequence_number = 0;
   const int invalid_arg_err = 1;
@@ -79,8 +79,22 @@ int main()
       }
       if (sequence_number != 0)
       {
-        stamboliyski::taskSix(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest, num_lim);
-        stamboliyski::taskSixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count, num_lim);
+        try
+        {
+          stamboliyski::taskSix(sequence_number, old_sequence_number, task_six_local_lenght, task_six_longest, num_lim);
+        }
+        catch (const std::logic_error &e)
+        {
+          std::cerr << "Overflow error!\n";
+        }
+        try
+        {
+          stamboliyski::taskSixteen(sequence_number, task_sixteen_smallest_element, task_sixteen_count, num_lim);
+        }
+        catch (const std::logic_error &e)
+        {
+          std::cerr << "Overflow error!\n";
+        }
       }
     }
   }
