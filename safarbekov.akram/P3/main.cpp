@@ -10,6 +10,9 @@ namespace safarbekov
   const int exit_ok = 0;
   const int exit_args_error = 1;
   const int exit_input_error = 2;
+  const int fixed_mode = 1;
+  const int dynamic_mode = 2;
+  const int valid_arguments_count = 4;
 
   bool parseMode(const char* text, int& mode)
   {
@@ -19,12 +22,12 @@ namespace safarbekov
     }
     if (text[0] == '1')
     {
-      mode = 1;
+      mode = fixed_mode;
       return true;
     }
     if (text[0] == '2')
     {
-      mode = 2;
+      mode = dynamic_mode;
       return true;
     }
     return false;
@@ -59,6 +62,16 @@ namespace safarbekov
       {
         return false;
       }
+    }
+    return true;
+  }
+
+  bool checkNoExtraData(std::istream& input)
+  {
+    int dummy = 0;
+    if (input >> dummy)
+    {
+      return false;
     }
     return true;
   }
@@ -129,6 +142,27 @@ namespace safarbekov
     return output.good();
   }
 
+  int processMatrix(std::istream& input, std::ostream& output, int* data, std::size_t rows, std::size_t cols)
+  {
+    const std::size_t count = rows * cols;
+    if (!readElements(input, data, count))
+    {
+      std::cerr << "invalid matrix elements\n";
+      return exit_input_error;
+    }
+    if (!checkNoExtraData(input))
+    {
+      std::cerr << "extra data after matrix\n";
+      return exit_input_error;
+    }
+    if (!writeResults(output, data, rows, cols))
+    {
+      std::cerr << "write error\n";
+      return exit_args_error;
+    }
+    return exit_ok;
+  }
+
   int processFixed(std::istream& input, std::ostream& output)
   {
     std::size_t rows = 0;
@@ -144,17 +178,7 @@ namespace safarbekov
       return exit_input_error;
     }
     int data[max_fixed_size];
-    if (!readElements(input, data, rows * cols))
-    {
-      std::cerr << "invalid matrix elements\n";
-      return exit_input_error;
-    }
-    if (!writeResults(output, data, rows, cols))
-    {
-      std::cerr << "write error\n";
-      return exit_args_error;
-    }
-    return exit_ok;
+    return processMatrix(input, output, data, rows, cols);
   }
 
   int processDynamic(std::istream& input, std::ostream& output)
@@ -177,27 +201,14 @@ namespace safarbekov
       std::cerr << "memory allocation error\n";
       return exit_input_error;
     }
-    int result = exit_ok;
-    if (!readElements(input, data, count))
-    {
-      std::cerr << "invalid matrix elements\n";
-      result = exit_input_error;
-    }
-    else
-    {
-      if (!writeResults(output, data, rows, cols))
-      {
-        std::cerr << "write error\n";
-        result = exit_args_error;
-      }
-    }
+    int result = processMatrix(input, output, data, rows, cols);
     delete[] data;
     return result;
   }
 
   int lab(int argc, char** argv)
   {
-    if (argc != 4)
+    if (argc != valid_arguments_count)
     {
       std::cerr << "usage: ./lab num input output\n";
       return exit_args_error;
@@ -224,7 +235,7 @@ namespace safarbekov
       return exit_args_error;
     }
 
-    if (mode == 1)
+    if (mode == fixed_mode)
     {
       return processFixed(input, output);
     }
