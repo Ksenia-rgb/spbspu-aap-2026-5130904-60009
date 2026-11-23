@@ -1,7 +1,6 @@
 #include <iostream>
 
-namespace zakharov
-{
+namespace zakharov {
   struct SeqStats
   {
     size_t count = 0;       
