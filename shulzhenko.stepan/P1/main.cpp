@@ -1,46 +1,93 @@
 #include <iostream>
+#include <limits>
 
-int laba()
+namespace shulzhenko
 {
-  int last = 0, cur = 0, next = 0;
-  int inq_seq = 0;
-  int grt_lss = 0;
+  constexpr int success = 0;
+  constexpr int invalid_input = 1;
+  constexpr int impossible_calculate = 2;
+  constexpr int max_count = std::numeric_limits<int>::max();
 
-  while (true)
+  int laba()
   {
-    if (!(std::cin >> next))
-    {
-      return 1;
-    }
+    int last = 0, cur = 0, next = 0;
+    int inq_seq = 0;
+    int grt_lss = 0;
+    bool inq_overflow = false;
+    bool grt_overflow = false;
+    bool zero_reached = false;
 
-    if (next == 0)
+    while (std::cin >> next)
     {
-      break;
-    }
-
-    if (cur != 0)
-    {
-      if (last != 0 && cur < last && cur > next)
+      if (next == 0)
       {
-        grt_lss += 1;
+        zero_reached = true;
+        break;
+      }
+
+      if (cur != 0)
+      {
+        if (last != 0 && cur < last && cur > next)
+        {
+          if (grt_lss == max_count)
+          {
+            grt_overflow = true;
+          }
+          grt_lss += 1;
+        }
+      }
+
+      last = cur;
+      cur = next;
+
+      if (last != 0 && cur > last)
+      {
+        if (inq_seq == max_count)
+        {
+          inq_overflow = true;
+        }
+        inq_seq += 1;
       }
     }
 
-    last = cur;
-    cur = next;
-
-    if (last != 0 && cur > last)
+    if (next != 0 || std::cin.fail())
     {
-      inq_seq += 1;
+      std::cerr << "Error: invalid input\n";
+      return invalid_input;
     }
+
+    if (!zero_reached)
+    {
+      std::cerr << "Error: invalid input\n";
+      return invalid_input;
+    }
+
+    if (inq_overflow)
+    {
+      std::cerr << "Error: overflow\n";
+      return impossible_calculate;
+    }
+    else
+    {
+      std::cout << inq_seq << '\n';
+    }
+
+    if (grt_overflow)
+    {
+      std::cerr << "Error: overflow\n";
+      return impossible_calculate;
+    }
+    else
+    {
+      std::cout << grt_lss << '\n';
+    }
+
+    return success;
   }
 
-  std::cout << inq_seq << std::endl;
-  std::cout << grt_lss << std::endl;
-  return 0;
 }
 
 int main()
 {
-  laba();
+  return shulzhenko::laba();
 }
