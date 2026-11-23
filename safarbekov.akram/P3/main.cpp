@@ -201,7 +201,7 @@ namespace safarbekov
       std::cerr << "memory allocation error\n";
       return exit_input_error;
     }
-    int result = processMatrix(input, output, data, rows, cols);
+    const int result = processMatrix(input, output, data, rows, cols);
     delete[] data;
     return result;
   }
