@@ -1,80 +1,89 @@
 #include <iostream>
+#include <limits>
 
 namespace aristov
 {
-  int run()
-  {
-    int x = 0;
-    if (!(std::cin >> x))
-    {
-      std::cerr << "Invalid input\n";
-      return 1;
-    }
+    constexpr int INVALID_INPUT = 1;
+    constexpr int NO_SECOND_MAX = 2;
+    constexpr int COUNTER_OVERFLOW = 3;
 
-    int max = 0;
-    int second = 0;
-    int prev = 0;
-    int sign_changes = 0;
-    bool has_value = false;
-    bool has_second = false;
-
-    while (x != 0)
+    int run()
     {
-      if (!has_value)
-      {
-        max = x;
-        prev = x;
-        has_value = true;
-      }
-      else
-      {
-        if ((prev > 0 && x < 0) || (prev < 0 && x > 0))
+        int x = 0;
+
+        if (!(std::cin >> x))
         {
-          ++sign_changes;
+            std::cerr << "Invalid input\n";
+            return INVALID_INPUT;
         }
 
-        if (x > max)
+        int max = 0;
+        int second = 0;
+        int prev = 0;
+        int sign_changes = 0;
+
+        bool has_value = false;
+        bool has_second = false;
+
+        while (x != 0)
         {
-          second = max;
-          max = x;
-          has_second = true;
+            if (!has_value)
+            {
+                max = x;
+                prev = x;
+                has_value = true;
+            }
+            else
+            {
+                if ((prev > 0 && x < 0) ||
+                    (prev < 0 && x > 0))
+                {
+                    if (sign_changes ==
+                        std::numeric_limits<int>::max())
+                    {
+                        std::cerr << "Counter overflow\n";
+                        return COUNTER_OVERFLOW;
+                    }
+
+                    ++sign_changes;
+                }
+
+                if (x > max)
+                {
+                    second = max;
+                    max = x;
+                    has_second = true;
+                }
+                else if (!has_second || x > second)
+                {
+                    second = x;
+                    has_second = true;
+                }
+
+                prev = x;
+            }
+
+            if (!(std::cin >> x))
+            {
+                std::cerr << "Invalid input\n";
+                return INVALID_INPUT;
+            }
         }
-        else if (!has_second || x > second)
+
+        if (!has_second)
         {
-          second = x;
-          has_second = true;
+            std::cerr << "Cannot calculate SUB-MAX\n";
+            return NO_SECOND_MAX;
         }
 
-        prev = x;
-      }
+        std::cout << second << '\n';
+        std::cout << sign_changes << '\n';
 
-      if (!(std::cin >> x))
-      {
-        std::cerr << "Invalid input\n";
-        return 1;
-      }
+        return 0;
     }
-
-    if (!has_second)
-    {
-      std::cerr << "Cannot calculate SUB-MAX\n";
-    }
-    else
-    {
-      std::cout << second << '\n';
-    }
-
-    std::cout << sign_changes << '\n';
-
-    if (!has_second)
-    {
-      return 2;
-    }
-    return 0;
-  }
 }
 
 int main()
 {
-  return aristov::run();
+    return aristov::run();
 }
