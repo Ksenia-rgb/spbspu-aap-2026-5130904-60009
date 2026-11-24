@@ -35,11 +35,9 @@ namespace aristov
             }
             else
             {
-                if ((prev > 0 && x < 0) ||
-                    (prev < 0 && x > 0))
+                if ((prev > 0 && x < 0) || (prev < 0 && x > 0))
                 {
-                    if (sign_changes ==
-                        std::numeric_limits<int>::max())
+                    if (sign_changes == std::numeric_limits<int>::max())
                     {
                         std::cerr << "Counter overflow\n";
                         return COUNTER_OVERFLOW;
