@@ -1,7 +1,8 @@
 #include <iostream>
 #include <limits>
 
-namespace aristov {
+namespace aristov
+{
   constexpr int INVALID_INPUT = 1;
   constexpr int NO_SECOND_MAX = 2;
   constexpr int COUNTER_OVERFLOW = 3;
@@ -10,7 +11,8 @@ namespace aristov {
   {
     int x = 0;
 
-    if (!(std::cin >> x)) {
+    if (!(std::cin >> x))
+    {
       std::cerr << "Invalid input\n";
       return INVALID_INPUT;
     }
@@ -23,14 +25,20 @@ namespace aristov {
     bool has_value = false;
     bool has_second = false;
 
-    while (x != 0) {
-      if (!has_value) {
+    while (x != 0)
+    {
+      if (!has_value)
+      {
         max = x;
         prev = x;
         has_value = true;
-      } else {
-        if ((prev > 0 && x < 0) || (prev < 0 && x > 0)) {
-          if (sign_changes == std::numeric_limits< int >::max()) {
+      }
+      else
+      {
+        if ((prev > 0 && x < 0) || (prev < 0 && x > 0))
+        {
+          if (sign_changes == std::numeric_limits< int >::max())
+          {
             std::cerr << "Counter overflow\n";
             return COUNTER_OVERFLOW;
           }
@@ -38,11 +46,14 @@ namespace aristov {
           ++sign_changes;
         }
 
-        if (x > max) {
+        if (x > max)
+        {
           second = max;
           max = x;
           has_second = true;
-        } else if (!has_second || x > second) {
+        }
+        else if (!has_second || x > second)
+        {
           second = x;
           has_second = true;
         }
@@ -50,13 +61,15 @@ namespace aristov {
         prev = x;
       }
 
-      if (!(std::cin >> x)) {
+      if (!(std::cin >> x))
+      {
         std::cerr << "Invalid input\n";
         return INVALID_INPUT;
       }
     }
 
-    if (!has_second) {
+    if (!has_second)
+    {
       std::cerr << "Cannot calculate SUB-MAX\n";
       return NO_SECOND_MAX;
     }
@@ -66,8 +79,9 @@ namespace aristov {
 
     return 0;
   }
+}
 
-  int main()
-  {
-    return aristov::run();
-  }
+int main()
+{
+  return aristov::run();
+}
