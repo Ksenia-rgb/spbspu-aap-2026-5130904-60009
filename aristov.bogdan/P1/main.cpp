@@ -2,7 +2,6 @@
 #include <limits>
 
 namespace aristov {
-
 constexpr int INVALID_INPUT = 1;
 constexpr int NO_SECOND_MAX = 2;
 constexpr int COUNTER_OVERFLOW = 3;
@@ -66,9 +65,6 @@ int run() {
 
   return 0;
 }
+} // namespace aristov
 
-}
-
-int main() {
-  return aristov::run();
-}
+int main() { return aristov::run(); }
