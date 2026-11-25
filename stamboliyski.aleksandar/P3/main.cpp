@@ -4,7 +4,7 @@
 
 namespace stamboliyski
 {
-  int sedelementmodeone(const size_t rows, const size_t cols, int arr[100][100])
+  int sedlementmodeone(const size_t rows, const size_t cols, int arr[100][100])
   {
     int countsedl = 0;
     for (size_t i = 0; i < rows; i++)
@@ -190,7 +190,7 @@ int main(int argc, char **argv)
       std::cerr << "Output did not open";
       return 1;
     }
-    output << stamboliyski::sedelementmodeone(rows, cols, matrix) << "\n";
+    output << stamboliyski::sedlementmodeone(rows, cols, matrix) << "\n";
     output << stamboliyski::equalcolumnnumone(rows, cols, matrix);
     output.close();
   }
