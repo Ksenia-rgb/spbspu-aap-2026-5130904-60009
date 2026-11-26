@@ -1,40 +1,54 @@
 #include <iostream>
-namespace vezovsky {
-  int podschet()
-  {
-    int a = 1, b = 0, chet = 0, c1 = 0, c2 = 0, chet2 = 0;
-    while (true) {
-      std::cin >> a;
-      if (std::cin.fail()) {
-        return 1;
-      }
-      if (a == 0) {
-        break;
-      }
-      b++;
-      if (c1 + c2 == a && b >= 3) {
-        chet++;
-      }
-      if (b >= 2 && a > c2) {
-        chet2++;
-      }
 
-      c1 = c2;
-      c2 = a;
+namespace vezovsky {
+
+    constexpr int success = 0;
+    constexpr int error = 1;
+    constexpr int few = 2;
+
+    int count()
+    {
+        int current = 0;
+        int prev = 0;
+        int prevprev = 0;
+
+        int count = 0;
+        int sum = 0;
+        int increase = 0;
+
+        while (std::cin >> current && current != 0) {
+            ++count;
+
+            if (count >= 3 && prevprev + prev == current) {
+                ++sum;
+            }
+
+            if (count >= 2 && current > prev) {
+                ++increase;
+            }
+
+            prevprev = prev;
+            prev = current;
+        }
+
+        if (std::cin.fail()) {
+            std::cerr << "Input error." << '\n';
+            return error;
+        }
+
+        if (count < 3) {
+            std::cerr << "Not enough data." << '\n';
+            return few;
+        }
+
+        std::cout << sum << '\n';
+        std::cout << increase << '\n';
+
+        return success;
     }
-    int res = 0;
-    if (b >= 3) {
-      std::cout << chet << "\n";
-    } else {
-      res = 2;
-    }
-    std::cout << chet2 << "\n";
-    return res;
-  }
 }
 
 int main()
 {
-  return vezovsky::podschet();
+    return vezovsky::count();
 }
-
